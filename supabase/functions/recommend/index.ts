@@ -1,7 +1,7 @@
-import { handleCors, corsHeaders } from '../_shared/cors.ts';
+import { handleCors } from '../_shared/cors.ts';
 import { ok, err } from '../_shared/response.ts';
 
-Deno.serve(async (req: Request) => {
+export async function handler(req: Request): Promise<Response> {
   const corsResponse = handleCors(req);
   if (corsResponse) return corsResponse;
 
@@ -17,4 +17,8 @@ Deno.serve(async (req: Request) => {
   } catch {
     return err('Bad request', 400);
   }
-});
+}
+
+if (import.meta.main) {
+  Deno.serve(handler);
+}
