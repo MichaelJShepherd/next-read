@@ -1,0 +1,40 @@
+name: Deploy frontend (Cloudflare Pages)
+
+on:
+  push:
+    branches: [main, development]
+    paths: ['frontend/**', '.github/workflows/deploy-frontend.yml']
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - name: Build
+        # Production from main; development build (staging env) otherwise.
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            npm run build
+          else
+            npm run build:dev
+          fi
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # 'main' deploys go to production; any other branch becomes a preview.
+          command: >-
+            pages deploy dist/frontend/browser
+            --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+            --branch=${{ github.ref_name }}

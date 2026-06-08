@@ -1,0 +1,75 @@
+name: Deploy Supabase
+
+on:
+  push:
+    branches: [main, development]
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      pipeline: ${{ steps.filter.outputs.pipeline }}
+      migrations: ${{ steps.filter.outputs.migrations }}
+      functions: ${{ steps.filter.outputs.functions }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            pipeline:
+              - '.github/workflows/deploy-backend.yml'
+            migrations:
+              - 'supabase/migrations/**'
+            functions:
+              - 'supabase/functions/**'
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Run unit tests
+        run: |
+          if [ -n "$(find supabase/functions -name '*_test.ts' 2>/dev/null)" ]; then
+            deno test --allow-env --allow-net --config supabase/functions/deno.json supabase/functions/
+          else
+            echo "No edge function tests yet — skipping."
+          fi
+
+  deploy:
+    needs: [detect-changes, test]
+    if: |
+      needs.detect-changes.outputs.pipeline == 'true' ||
+      needs.detect-changes.outputs.migrations == 'true' ||
+      needs.detect-changes.outputs.functions == 'true'
+    runs-on: ubuntu-latest
+    # Maps main -> production, development -> staging via GitHub Environments.
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Link to Supabase project
+        run: supabase link --project-ref ${{ vars.SUPABASE_PROJECT_ID }}
+      - name: Push database migrations
+        if: needs.detect-changes.outputs.pipeline == 'true' || needs.detect-changes.outputs.migrations == 'true'
+        run: supabase db push --include-all
+      - name: Set edge function secrets
+        if: needs.detect-changes.outputs.pipeline == 'true' || needs.detect-changes.outputs.functions == 'true'
+        # Add project-specific secrets here, e.g.:
+        # run: supabase secrets set "MY_SECRET=${{ secrets.MY_SECRET }}"
+        run: echo "No secrets configured yet"
+      - name: Deploy all edge functions
+        if: needs.detect-changes.outputs.pipeline == 'true' || needs.detect-changes.outputs.functions == 'true'
+        run: |
+          if [ -n "$(find supabase/functions -mindepth 1 -name '*.ts' 2>/dev/null)" ]; then
+            supabase functions deploy
+          else
+            echo "No edge functions to deploy yet — skipping."
+          fi

@@ -1,0 +1,27 @@
+name: Frontend test
+
+on:
+  pull_request:
+    branches: [main, development]
+    paths: ['frontend/**', '.github/workflows/frontend-test.yml']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - name: Unit tests
+        run: npm test -- --watch=false --browsers=ChromeHeadless || npm test -- --watch=false
+      - name: Production build
+        run: npm run build
+      - name: Smoke test (prod bundle)
+        run: npm run smoke:prod

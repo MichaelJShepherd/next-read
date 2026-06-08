@@ -1,0 +1,3 @@
+-- Seed data for local development.
+-- Run via: supabase db reset
+-- Do NOT include test fixtures here — keep those in test files.
