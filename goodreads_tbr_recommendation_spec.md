@@ -325,6 +325,7 @@ The app first narrows the TBR using the quiz flow, then spins between the 3–5 
 The design should feel like a cozy personal librarian.
 
 Avoid:
+
 - Dense Goodreads-style lists
 - Productivity dashboard vibes
 - Overly gamified interfaces

@@ -1,0 +1,1971 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Next Read — Brand Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --color-green-50: #f0fdf4;
+        --color-green-100: #dcfce7;
+        --color-green-200: #bbf7d0;
+        --color-green-300: #86efac;
+        --color-green-400: #4ade80;
+        --color-green-500: #2d8a56;
+        --color-green-600: #1a6b3c;
+        --color-green-700: #15803d;
+        --color-green-800: #166534;
+        --color-green-900: #14532d;
+        --color-neutral-0: #ffffff;
+        --color-neutral-50: #fafafa;
+        --color-neutral-100: #f5f5f5;
+        --color-neutral-200: #e5e5e5;
+        --color-neutral-300: #d4d4d4;
+        --color-neutral-400: #a3a3a3;
+        --color-neutral-500: #737373;
+        --color-neutral-600: #525252;
+        --color-neutral-700: #404040;
+        --color-neutral-800: #262626;
+        --color-neutral-900: #171717;
+        --color-cream: #fefcf3;
+        --color-warm-gray: #f7f5f0;
+        --color-amber-400: #fbbf24;
+        --color-amber-500: #f59e0b;
+        --color-success: #2d8a56;
+        --color-warning: #f59e0b;
+        --color-error: #ef4444;
+        --color-info: #3b82f6;
+        --font-primary: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        --font-display: "DM Serif Display", Georgia, serif;
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 20px;
+        --space-6: 24px;
+        --space-8: 32px;
+        --space-10: 40px;
+        --space-12: 48px;
+        --space-16: 64px;
+        --radius-sm: 6px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 24px;
+        --radius-full: 9999px;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: var(--font-primary);
+        color: var(--color-neutral-700);
+        background: var(--color-neutral-0);
+        font-size: 16px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* --- Navigation --- */
+      .nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--color-neutral-200);
+        padding: 0 var(--space-6);
+      }
+      .nav-inner {
+        max-width: 1120px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        height: 56px;
+        gap: var(--space-6);
+        overflow-x: auto;
+      }
+      .nav-brand {
+        font-weight: 500;
+        font-size: 15px;
+        color: var(--color-neutral-800);
+        white-space: nowrap;
+        text-decoration: none;
+      }
+      .nav-brand span {
+        color: var(--color-green-500);
+      }
+      .nav-links {
+        display: flex;
+        gap: var(--space-4);
+        list-style: none;
+      }
+      .nav-links a {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--color-neutral-500);
+        text-decoration: none;
+        white-space: nowrap;
+        transition: color 150ms ease;
+      }
+      .nav-links a:hover {
+        color: var(--color-green-600);
+      }
+
+      /* --- Layout --- */
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 var(--space-6);
+      }
+
+      /* --- Hero --- */
+      .hero {
+        padding: var(--space-16) 0 var(--space-12);
+        text-align: center;
+        border-bottom: 1px solid var(--color-neutral-200);
+      }
+
+      .hero h1 {
+        font-family: var(--font-display);
+        font-size: 36px;
+        font-weight: 400;
+        color: var(--color-neutral-800);
+        line-height: 1.2;
+        margin-bottom: var(--space-2);
+      }
+      .hero p {
+        font-size: 16px;
+        color: var(--color-neutral-500);
+      }
+      .hero .overline {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--color-green-600);
+        margin-bottom: var(--space-4);
+      }
+
+      /* --- Sections --- */
+      .section {
+        padding: var(--space-12) 0;
+        border-bottom: 1px solid var(--color-neutral-100);
+      }
+      .section:last-child {
+        border-bottom: none;
+      }
+      .section-header {
+        margin-bottom: var(--space-8);
+      }
+      .section-header h2 {
+        font-family: var(--font-display);
+        font-size: 28px;
+        font-weight: 400;
+        color: var(--color-neutral-800);
+        margin-bottom: var(--space-1);
+      }
+      .section-header p {
+        font-size: 14px;
+        color: var(--color-neutral-500);
+      }
+      .subsection {
+        margin-bottom: var(--space-8);
+      }
+      .subsection:last-child {
+        margin-bottom: 0;
+      }
+      .subsection h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--color-neutral-800);
+        margin-bottom: var(--space-4);
+      }
+      .subsection p,
+      .subsection li {
+        font-size: 14px;
+        color: var(--color-neutral-600);
+        line-height: 1.6;
+      }
+      .subsection ul {
+        list-style: none;
+        padding: 0;
+      }
+      .subsection ul li {
+        padding-left: 20px;
+        position: relative;
+        margin-bottom: var(--space-2);
+      }
+      .subsection ul li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 8px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--color-green-400);
+      }
+
+      /* --- Color Swatches --- */
+      .swatch-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: var(--space-3);
+      }
+      .swatch {
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        border: 1px solid var(--color-neutral-200);
+        background: var(--color-neutral-0);
+      }
+      .swatch-color {
+        height: 64px;
+        width: 100%;
+      }
+      .swatch-info {
+        padding: var(--space-2) var(--space-3);
+      }
+      .swatch-info .token {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--color-neutral-800);
+        display: block;
+      }
+      .swatch-info .hex {
+        font-size: 11px;
+        font-family: "SF Mono", "Fira Code", monospace;
+        color: var(--color-neutral-500);
+      }
+      .swatch-info .usage {
+        font-size: 11px;
+        color: var(--color-neutral-400);
+        margin-top: 2px;
+        display: block;
+      }
+
+      /* small swatches in a row */
+      .swatch-row {
+        display: flex;
+        gap: var(--space-3);
+        flex-wrap: wrap;
+      }
+      .swatch-sm {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        background: var(--color-neutral-50);
+        border-radius: var(--radius-sm);
+        padding: var(--space-2) var(--space-3);
+        border: 1px solid var(--color-neutral-200);
+      }
+      .swatch-sm .dot {
+        width: 24px;
+        height: 24px;
+        border-radius: var(--radius-sm);
+        flex-shrink: 0;
+      }
+      .swatch-sm .label {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--color-neutral-700);
+      }
+      .swatch-sm .hex {
+        font-size: 11px;
+        font-family: "SF Mono", "Fira Code", monospace;
+        color: var(--color-neutral-400);
+      }
+
+      /* --- Typography Specimen --- */
+      .type-specimen {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-5);
+      }
+      .type-row {
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-6);
+        padding: var(--space-3) 0;
+        border-bottom: 1px solid var(--color-neutral-100);
+      }
+      .type-row:last-child {
+        border-bottom: none;
+      }
+      .type-meta {
+        flex-shrink: 0;
+        width: 160px;
+      }
+      .type-meta .token-name {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--color-green-600);
+        font-family: "SF Mono", "Fira Code", monospace;
+      }
+      .type-meta .token-detail {
+        font-size: 11px;
+        color: var(--color-neutral-400);
+      }
+      .type-sample {
+        flex: 1;
+        color: var(--color-neutral-800);
+      }
+
+      /* --- Token Table --- */
+      .token-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      .token-table th {
+        text-align: left;
+        font-weight: 500;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-neutral-400);
+        padding: var(--space-2) var(--space-3);
+        border-bottom: 2px solid var(--color-neutral-200);
+      }
+      .token-table td {
+        padding: var(--space-2) var(--space-3);
+        border-bottom: 1px solid var(--color-neutral-100);
+        vertical-align: top;
+      }
+      .token-table .token-name {
+        font-family: "SF Mono", "Fira Code", monospace;
+        font-size: 12px;
+        color: var(--color-green-700);
+        font-weight: 500;
+      }
+      .token-table .token-value {
+        font-family: "SF Mono", "Fira Code", monospace;
+        font-size: 12px;
+        color: var(--color-neutral-600);
+      }
+      .token-table .token-usage {
+        font-size: 12px;
+        color: var(--color-neutral-500);
+      }
+
+      /* --- Component Previews --- */
+      .preview-box {
+        background: var(--color-neutral-50);
+        border: 1px solid var(--color-neutral-200);
+        border-radius: var(--radius-lg);
+        padding: var(--space-8);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-4);
+        margin-bottom: var(--space-4);
+      }
+
+      /* Button previews */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 48px;
+        padding: 0 24px;
+        border-radius: var(--radius-md);
+        font-family: var(--font-primary);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 150ms ease;
+        border: none;
+        text-decoration: none;
+      }
+      .btn-primary {
+        background: var(--color-green-500);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background: var(--color-green-600);
+      }
+      .btn-secondary {
+        background: transparent;
+        color: var(--color-green-600);
+        border: 1.5px solid var(--color-green-500);
+      }
+      .btn-secondary:hover {
+        background: var(--color-green-50);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--color-neutral-600);
+      }
+      .btn-ghost:hover {
+        background: var(--color-neutral-100);
+      }
+
+      /* Card preview */
+      .card-preview {
+        background: var(--color-neutral-0);
+        border: 1px solid var(--color-neutral-200);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4);
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        gap: var(--space-4);
+        max-width: 360px;
+        transition: box-shadow 250ms ease;
+      }
+      .card-preview:hover {
+        box-shadow: var(--shadow-md);
+      }
+      .card-cover {
+        width: 72px;
+        height: 108px;
+        border-radius: var(--radius-md);
+        background: linear-gradient(
+          135deg,
+          var(--color-green-100),
+          var(--color-green-300)
+        );
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .card-cover svg {
+        opacity: 0.4;
+      }
+      .card-body h4 {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--color-neutral-800);
+        margin-bottom: 2px;
+      }
+      .card-body .author {
+        font-size: 13px;
+        color: var(--color-neutral-500);
+        margin-bottom: var(--space-2);
+      }
+      .card-body .meta {
+        font-size: 12px;
+        color: var(--color-neutral-400);
+        display: flex;
+        gap: var(--space-3);
+      }
+
+      /* Chip previews */
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        height: 44px;
+        padding: 0 20px;
+        border-radius: var(--radius-md);
+        font-family: var(--font-primary);
+        font-size: 14px;
+        font-weight: 400;
+        cursor: pointer;
+        border: 1.5px solid var(--color-neutral-200);
+        background: var(--color-neutral-50);
+        color: var(--color-neutral-700);
+        transition: all 150ms ease;
+      }
+      .chip:hover {
+        background: var(--color-green-50);
+        border-color: var(--color-green-200);
+      }
+      .chip.selected {
+        background: var(--color-green-50);
+        border-color: var(--color-green-500);
+        color: var(--color-green-700);
+        font-weight: 500;
+      }
+
+      /* Input preview */
+      .input-preview {
+        width: 280px;
+        height: 48px;
+        padding: 0 16px;
+        border-radius: var(--radius-md);
+        border: 1.5px solid var(--color-neutral-200);
+        font-family: var(--font-primary);
+        font-size: 14px;
+        color: var(--color-neutral-700);
+        background: var(--color-neutral-0);
+        outline: none;
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+      }
+      .input-preview:focus {
+        border-color: var(--color-green-500);
+        box-shadow: 0 0 0 3px var(--color-green-100);
+      }
+      .input-preview::placeholder {
+        color: var(--color-neutral-400);
+      }
+
+      /* Radius preview */
+      .radius-row {
+        display: flex;
+        gap: var(--space-5);
+        flex-wrap: wrap;
+        align-items: end;
+      }
+      .radius-item {
+        text-align: center;
+      }
+      .radius-box {
+        width: 64px;
+        height: 64px;
+        background: var(--color-green-100);
+        border: 2px solid var(--color-green-400);
+        margin-bottom: var(--space-2);
+      }
+      .radius-label {
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--color-neutral-600);
+      }
+      .radius-value {
+        font-size: 11px;
+        color: var(--color-neutral-400);
+        font-family: "SF Mono", "Fira Code", monospace;
+      }
+
+      /* Shadow preview */
+      .shadow-row {
+        display: flex;
+        gap: var(--space-6);
+        flex-wrap: wrap;
+      }
+      .shadow-item {
+        text-align: center;
+      }
+      .shadow-box {
+        width: 96px;
+        height: 64px;
+        background: var(--color-neutral-0);
+        border-radius: var(--radius-lg);
+        margin-bottom: var(--space-2);
+      }
+      .shadow-label {
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--color-neutral-600);
+      }
+
+      /* Dark mode comparison */
+      .dark-mode-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-4);
+        margin-top: var(--space-4);
+      }
+      .dark-mode-card {
+        border-radius: var(--radius-lg);
+        padding: var(--space-6);
+        border: 1px solid;
+      }
+      .dark-mode-card.light {
+        background: #ffffff;
+        border-color: #e5e5e5;
+      }
+      .dark-mode-card.dark {
+        background: #171717;
+        border-color: #404040;
+      }
+      .dark-mode-card h4 {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: var(--space-3);
+      }
+      .dark-mode-card.light h4 {
+        color: #262626;
+      }
+      .dark-mode-card.dark h4 {
+        color: #f5f5f5;
+      }
+      .dark-mode-card .dm-surface {
+        border-radius: var(--radius-md);
+        padding: var(--space-3) var(--space-4);
+        margin-bottom: var(--space-2);
+        font-size: 13px;
+      }
+      .dark-mode-card.light .dm-surface {
+        background: #fafafa;
+        border: 1px solid #e5e5e5;
+        color: #525252;
+      }
+      .dark-mode-card.dark .dm-surface {
+        background: #262626;
+        border: 1px solid #404040;
+        color: #a3a3a3;
+      }
+      .dark-mode-card .dm-btn {
+        display: inline-block;
+        padding: 8px 20px;
+        border-radius: var(--radius-md);
+        font-size: 13px;
+        font-weight: 500;
+        color: #fff;
+        margin-top: var(--space-2);
+      }
+      .dark-mode-card.light .dm-btn {
+        background: #2d8a56;
+      }
+      .dark-mode-card.dark .dm-btn {
+        background: #4ade80;
+        color: #171717;
+      }
+
+      /* Do/Don't cards */
+      .do-dont-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-4);
+      }
+      .do-card,
+      .dont-card {
+        border-radius: var(--radius-md);
+        padding: var(--space-4) var(--space-5);
+      }
+      .do-card {
+        background: var(--color-green-50);
+        border-left: 3px solid var(--color-green-500);
+        border-radius: 0;
+      }
+      .dont-card {
+        background: #fef2f2;
+        border-left: 3px solid var(--color-error);
+        border-radius: 0;
+      }
+      .do-card h4,
+      .dont-card h4 {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: var(--space-2);
+      }
+      .do-card h4 {
+        color: var(--color-green-700);
+      }
+      .dont-card h4 {
+        color: #b91c1c;
+      }
+      .do-card li,
+      .dont-card li {
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 4px;
+      }
+      .do-card li {
+        color: var(--color-green-800);
+      }
+      .dont-card li {
+        color: #991b1b;
+      }
+      .do-card ul,
+      .dont-card ul {
+        padding-left: 16px;
+      }
+
+      /* Motion table */
+      .motion-row {
+        display: grid;
+        grid-template-columns: 140px 80px 120px 1fr;
+        gap: var(--space-3);
+        padding: var(--space-3) 0;
+        border-bottom: 1px solid var(--color-neutral-100);
+        font-size: 13px;
+        align-items: center;
+      }
+      .motion-row:first-child {
+        border-top: 1px solid var(--color-neutral-100);
+      }
+      .motion-pattern {
+        font-weight: 500;
+        color: var(--color-neutral-800);
+      }
+      .motion-duration {
+        font-family: "SF Mono", "Fira Code", monospace;
+        font-size: 12px;
+        color: var(--color-neutral-500);
+      }
+      .motion-easing {
+        font-family: "SF Mono", "Fira Code", monospace;
+        font-size: 12px;
+        color: var(--color-green-600);
+      }
+      .motion-usage {
+        color: var(--color-neutral-500);
+      }
+
+      /* Code block */
+      .code-block {
+        background: var(--color-neutral-900);
+        border-radius: var(--radius-md);
+        padding: var(--space-5);
+        overflow-x: auto;
+        margin-top: var(--space-4);
+      }
+      .code-block pre {
+        font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+        font-size: 13px;
+        line-height: 1.6;
+        color: #e5e5e5;
+      }
+      .code-block .comment {
+        color: #6b7280;
+      }
+      .code-block .prop {
+        color: #86efac;
+      }
+      .code-block .val {
+        color: #fbbf24;
+      }
+
+      /* Spacing viz */
+      .spacing-viz {
+        display: flex;
+        align-items: end;
+        gap: var(--space-3);
+        flex-wrap: wrap;
+      }
+      .spacing-item {
+        text-align: center;
+      }
+      .spacing-bar {
+        width: 40px;
+        background: var(--color-green-200);
+        border-radius: 4px 4px 0 0;
+        margin: 0 auto var(--space-1);
+        border: 1px solid var(--color-green-300);
+      }
+      .spacing-name {
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--color-neutral-600);
+      }
+      .spacing-px {
+        font-size: 10px;
+        color: var(--color-neutral-400);
+        font-family: "SF Mono", "Fira Code", monospace;
+      }
+
+      /* Accessibility list */
+      .a11y-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-3);
+      }
+      .a11y-item {
+        display: flex;
+        gap: var(--space-3);
+        padding: var(--space-3) var(--space-4);
+        background: var(--color-neutral-50);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--color-neutral-200);
+      }
+      .a11y-icon {
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        background: var(--color-green-100);
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .a11y-icon svg {
+        width: 16px;
+        height: 16px;
+        color: var(--color-green-600);
+      }
+      .a11y-text {
+        font-size: 13px;
+        color: var(--color-neutral-600);
+        line-height: 1.5;
+      }
+      .a11y-text strong {
+        font-weight: 600;
+        color: var(--color-neutral-800);
+        display: block;
+        font-size: 12px;
+      }
+
+      /* Footer */
+      .footer {
+        padding: var(--space-8) 0;
+        text-align: center;
+        color: var(--color-neutral-400);
+        font-size: 13px;
+      }
+
+      @media (max-width: 640px) {
+        .hero h1 {
+          font-size: 28px;
+        }
+        .section-header h2 {
+          font-size: 24px;
+        }
+        .swatch-grid {
+          grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        }
+        .dark-mode-row {
+          grid-template-columns: 1fr;
+        }
+        .do-dont-grid {
+          grid-template-columns: 1fr;
+        }
+        .a11y-grid {
+          grid-template-columns: 1fr;
+        }
+        .type-row {
+          flex-direction: column;
+          gap: var(--space-2);
+        }
+        .type-meta {
+          width: auto;
+        }
+        .motion-row {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="nav">
+      <div class="nav-inner">
+        <a href="#" class="nav-brand"><span>next</span> read</a>
+        <ul class="nav-links">
+          <li><a href="#identity">Identity</a></li>
+          <li><a href="#colors">Colors</a></li>
+          <li><a href="#typography">Typography</a></li>
+          <li><a href="#spacing">Spacing</a></li>
+          <li><a href="#components">Components</a></li>
+          <li><a href="#motion">Motion</a></li>
+          <li><a href="#voice">Voice</a></li>
+          <li><a href="#accessibility">Accessibility</a></li>
+          <li><a href="#tokens">Tokens</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero">
+      <div class="container">
+        <div>
+          <img src="assets/logo.svg" alt="next read logo" />
+        </div>
+        <div class="overline">Brand guide</div>
+        <h1>next read</h1>
+        <p>Your cozy librarian &mdash; visual identity &amp; design system</p>
+      </div>
+    </header>
+
+    <main class="container">
+      <!-- Brand Identity -->
+      <section class="section" id="identity">
+        <div class="section-header">
+          <h2>Brand identity</h2>
+          <p>The foundation of how Next Read looks, feels, and communicates.</p>
+        </div>
+        <div class="subsection">
+          <h3>Product name</h3>
+          <p>
+            <strong>next read</strong> &mdash; lowercase in the wordmark. Title
+            case "Next Read" in prose and documentation.
+          </p>
+        </div>
+        <div class="subsection">
+          <h3>Tagline</h3>
+          <p
+            style="
+              font-family: var(--font-display);
+              font-size: 22px;
+              color: var(--color-neutral-800);
+            "
+          >
+            Your cozy librarian
+          </p>
+        </div>
+        <div class="subsection">
+          <h3>Positioning</h3>
+          <p>
+            A cozy personal librarian for your Goodreads TBR. Next Read helps
+            readers overcome decision paralysis by guiding them through a short,
+            mood-based recommendation flow.
+          </p>
+        </div>
+        <div class="subsection">
+          <h3>Logo</h3>
+          <p>
+            An open book with a leaf sprouting from the spine. The leaf
+            represents fresh starts and growth. The open book represents
+            possibility and choice.
+          </p>
+          <div class="preview-box" style="margin-top: var(--space-4)">
+            <img
+              src="assets/logo.svg"
+              width="200"
+              alt="next read logo — light background"
+            />
+            <div
+              style="
+                padding: 24px 40px;
+                background: var(--color-neutral-800);
+                border-radius: var(--radius-md);
+              "
+            >
+              <img
+                src="assets/logo-dark.svg"
+                width="200"
+                alt="next read logo — dark background"
+              />
+            </div>
+          </div>
+          <p
+            style="
+              font-size: 12px;
+              color: var(--color-neutral-400);
+              text-align: center;
+              margin-top: var(--space-2);
+            "
+          >
+            Light background &nbsp;&bull;&nbsp; Dark background
+          </p>
+        </div>
+        <div class="subsection">
+          <h3>Logo usage rules</h3>
+          <ul>
+            <li>
+              Minimum size: 32px height for the icon, 120px width for the full
+              lockup
+            </li>
+            <li>
+              Maintain clear space equal to the leaf height around the logo
+            </li>
+            <li>On dark backgrounds, use <code style="font-size:12px; background:var(--color-neutral-100); padding:2px 6px; border-radius:4px;">logo-dark.svg</code> — brightened greens and light wordmark</li>
+            <li>
+              Never rotate, stretch, or recolor outside the defined palette
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Colors -->
+      <section class="section" id="colors">
+        <div class="section-header">
+          <h2>Color palette</h2>
+          <p>
+            Green is the core brand color. Warm neutrals keep it cozy, not
+            clinical.
+          </p>
+        </div>
+
+        <div class="subsection">
+          <h3>Primary &mdash; Green</h3>
+          <div class="swatch-grid">
+            <div class="swatch">
+              <div class="swatch-color" style="background: #f0fdf4"></div>
+              <div class="swatch-info">
+                <span class="token">green-50</span
+                ><span class="hex">#f0fdf4</span
+                ><span class="usage">Tinted backgrounds</span>
+              </div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-color" style="background: #dcfce7"></div>
+              <div class="swatch-info">
+                <span class="token">green-100</span
+                ><span class="hex">#dcfce7</span
+                ><span class="usage">Selected option bg</span>
+              </div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-color" style="background: #bbf7d0"></div>
+              <div class="swatch-info">
+                <span class="token">green-200</span
+                ><span class="hex">#bbf7d0</span
+                ><span class="usage">Light borders</span>
+              </div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-color" style="background: #86efac"></div>
+              <div class="swatch-info">
+                <span class="token">green-300</span
+                ><span class="hex">#86efac</span
+                ><span class="usage">Secondary accents</span>
+              </div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-color" style="background: #4ade80"></div>
+              <div class="swatch-info">
+                <span class="token">green-400</span
+                ><span class="hex">#4ade80</span
+                ><span class="usage">Icons (dark bg)</span>
+              </div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-color" style="background: #2d8a56"></div>
+              <div class="swatch-info">
+                <span class="token">green-500</span
+                ><span class="hex">#2d8a56</span
+                ><span class="usage">Primary brand</span>
+              </div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-color" style="background: #1a6b3c"></div>
+              <div class="swatch-info">
+                <span class="token">green-600</span
+                ><span class="hex">#1a6b3c</span
+                ><span class="usage">Hover state</span>
+              </div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-color" style="background: #15803d"></div>
+              <div class="swatch-info">
+                <span class="token">green-700</span
+                ><span class="hex">#15803d</span
+                ><span class="usage">Green text</span>
+              </div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-color" style="background: #166534"></div>
+              <div class="swatch-info">
+                <span class="token">green-800</span
+                ><span class="hex">#166534</span
+                ><span class="usage">Dark accents</span>
+              </div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-color" style="background: #14532d"></div>
+              <div class="swatch-info">
+                <span class="token">green-900</span
+                ><span class="hex">#14532d</span
+                ><span class="usage">Darkest green</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Neutrals</h3>
+          <div class="swatch-grid">
+            <div class="swatch">
+              <div
+                class="swatch-color"
+                style="background: #ffffff; border-bottom: 1px solid #e5e5e5"
+              ></div>
+              <div class="swatch-info">
+                <span class="token">neutral-0</span
+                ><span class="hex">#ffffff</span
+                ><span class="usage">Page bg (light)</span>
+              </div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-color" style="background: #fafafa"></div>
+              <div class="swatch-info">
+                <span class="token">neutral-50</span
+                ><span class="hex">#fafafa</span
+                ><span class="usage">Card surface</span>
+              </div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-color" style="background: #f5f5f5"></div>
+              <div class="swatch-info">
+                <span class="token">neutral-100</span
+                ><span class="hex">#f5f5f5</span
+                ><span class="usage">Dividers</span>
+              </div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-color" style="background: #e5e5e5"></div>
+              <div class="swatch-info">
+                <span class="token">neutral-200</span
+                ><span class="hex">#e5e5e5</span
+                ><span class="usage">Borders</span>
+              </div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-color" style="background: #a3a3a3"></div>
+              <div class="swatch-info">
+                <span class="token">neutral-400</span
+                ><span class="hex">#a3a3a3</span
+                ><span class="usage">Placeholder</span>
+              </div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-color" style="background: #737373"></div>
+              <div class="swatch-info">
+                <span class="token">neutral-500</span
+                ><span class="hex">#737373</span
+                ><span class="usage">Secondary text</span>
+              </div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-color" style="background: #525252"></div>
+              <div class="swatch-info">
+                <span class="token">neutral-600</span
+                ><span class="hex">#525252</span
+                ><span class="usage">Body text</span>
+              </div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-color" style="background: #404040"></div>
+              <div class="swatch-info">
+                <span class="token">neutral-700</span
+                ><span class="hex">#404040</span
+                ><span class="usage">Primary text</span>
+              </div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-color" style="background: #262626"></div>
+              <div class="swatch-info">
+                <span class="token">neutral-800</span
+                ><span class="hex">#262626</span
+                ><span class="usage">Headings</span>
+              </div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-color" style="background: #171717"></div>
+              <div class="swatch-info">
+                <span class="token">neutral-900</span
+                ><span class="hex">#171717</span
+                ><span class="usage">Page bg (dark)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Warm accents &amp; semantic</h3>
+          <div class="swatch-row">
+            <div class="swatch-sm">
+              <div
+                class="dot"
+                style="background: #fefcf3; border: 1px solid #e5e5e5"
+              ></div>
+              <div>
+                <div class="label">cream</div>
+                <div class="hex">#fefcf3</div>
+              </div>
+            </div>
+            <div class="swatch-sm">
+              <div
+                class="dot"
+                style="background: #f7f5f0; border: 1px solid #e5e5e5"
+              ></div>
+              <div>
+                <div class="label">warm-gray</div>
+                <div class="hex">#f7f5f0</div>
+              </div>
+            </div>
+            <div class="swatch-sm">
+              <div class="dot" style="background: #fbbf24"></div>
+              <div>
+                <div class="label">amber-400</div>
+                <div class="hex">#fbbf24</div>
+              </div>
+            </div>
+            <div class="swatch-sm">
+              <div class="dot" style="background: #f59e0b"></div>
+              <div>
+                <div class="label">amber-500</div>
+                <div class="hex">#f59e0b</div>
+              </div>
+            </div>
+            <div class="swatch-sm">
+              <div class="dot" style="background: #2d8a56"></div>
+              <div>
+                <div class="label">success</div>
+                <div class="hex">#2d8a56</div>
+              </div>
+            </div>
+            <div class="swatch-sm">
+              <div class="dot" style="background: #f59e0b"></div>
+              <div>
+                <div class="label">warning</div>
+                <div class="hex">#f59e0b</div>
+              </div>
+            </div>
+            <div class="swatch-sm">
+              <div class="dot" style="background: #ef4444"></div>
+              <div>
+                <div class="label">error</div>
+                <div class="hex">#ef4444</div>
+              </div>
+            </div>
+            <div class="swatch-sm">
+              <div class="dot" style="background: #3b82f6"></div>
+              <div>
+                <div class="label">info</div>
+                <div class="hex">#3b82f6</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Dark mode</h3>
+          <p>
+            Same green primary, inverted neutral scale. Primary green brightens
+            to
+            <code
+              style="
+                font-size: 12px;
+                background: var(--color-neutral-100);
+                padding: 2px 6px;
+                border-radius: 4px;
+              "
+              >#4ade80</code
+            >
+            for contrast.
+          </p>
+          <div class="dark-mode-row">
+            <div class="dark-mode-card light">
+              <h4>Light mode</h4>
+              <div class="dm-surface">Surface card with body text</div>
+              <div class="dm-btn">Primary action</div>
+            </div>
+            <div class="dark-mode-card dark">
+              <h4>Dark mode</h4>
+              <div class="dm-surface">Surface card with body text</div>
+              <div class="dm-btn">Primary action</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Typography -->
+      <section class="section" id="typography">
+        <div class="section-header">
+          <h2>Typography</h2>
+          <p>
+            Inter for UI, DM Serif Display for the cozy librarian personality.
+          </p>
+        </div>
+
+        <div class="subsection">
+          <h3>Font families</h3>
+          <p
+            style="
+              font-family: var(--font-display);
+              font-size: 28px;
+              color: var(--color-neutral-800);
+              margin: var(--space-4) 0 var(--space-1);
+            "
+          >
+            DM Serif Display &mdash; for display headings
+          </p>
+          <p
+            style="
+              font-size: 12px;
+              color: var(--color-neutral-400);
+              margin-bottom: var(--space-4);
+            "
+          >
+            Landing page hero, section headings, recommendation results
+          </p>
+          <p
+            style="
+              font-size: 18px;
+              color: var(--color-neutral-700);
+              margin-bottom: var(--space-1);
+            "
+          >
+            Inter &mdash; for everything else
+          </p>
+          <p style="font-size: 12px; color: var(--color-neutral-400)">
+            Body text, UI elements, labels, buttons, navigation
+          </p>
+        </div>
+
+        <div class="subsection">
+          <h3>Type scale</h3>
+          <div class="type-specimen">
+            <div class="type-row">
+              <div class="type-meta">
+                <span class="token-name">display-lg</span
+                ><span class="token-detail">32px / 400 / 1.2</span>
+              </div>
+              <div
+                class="type-sample"
+                style="
+                  font-family: var(--font-display);
+                  font-size: 32px;
+                  line-height: 1.2;
+                "
+              >
+                Find your next read
+              </div>
+            </div>
+            <div class="type-row">
+              <div class="type-meta">
+                <span class="token-name">display-md</span
+                ><span class="token-detail">24px / 400 / 1.3</span>
+              </div>
+              <div
+                class="type-sample"
+                style="
+                  font-family: var(--font-display);
+                  font-size: 24px;
+                  line-height: 1.3;
+                "
+              >
+                Your bookshelf is ready
+              </div>
+            </div>
+            <div class="type-row">
+              <div class="type-meta">
+                <span class="token-name">heading-lg</span
+                ><span class="token-detail">20px / 600 / 1.3</span>
+              </div>
+              <div
+                class="type-sample"
+                style="font-size: 20px; font-weight: 600; line-height: 1.3"
+              >
+                Recommendation results
+              </div>
+            </div>
+            <div class="type-row">
+              <div class="type-meta">
+                <span class="token-name">heading-md</span
+                ><span class="token-detail">18px / 600 / 1.4</span>
+              </div>
+              <div
+                class="type-sample"
+                style="font-size: 18px; font-weight: 600; line-height: 1.4"
+              >
+                The Great Gatsby
+              </div>
+            </div>
+            <div class="type-row">
+              <div class="type-meta">
+                <span class="token-name">body-lg</span
+                ><span class="token-detail">16px / 400 / 1.6</span>
+              </div>
+              <div
+                class="type-sample"
+                style="font-size: 16px; line-height: 1.6"
+              >
+                A story of the fabulously wealthy Jay Gatsby and his love for
+                the beautiful Daisy Buchanan.
+              </div>
+            </div>
+            <div class="type-row">
+              <div class="type-meta">
+                <span class="token-name">body-md</span
+                ><span class="token-detail">14px / 400 / 1.5</span>
+              </div>
+              <div
+                class="type-sample"
+                style="font-size: 14px; line-height: 1.5"
+              >
+                218 pages &bull; 4.2 rating &bull; Classic fiction
+              </div>
+            </div>
+            <div class="type-row">
+              <div class="type-meta">
+                <span class="token-name">body-sm</span
+                ><span class="token-detail">12px / 400 / 1.5</span>
+              </div>
+              <div
+                class="type-sample"
+                style="
+                  font-size: 12px;
+                  line-height: 1.5;
+                  color: var(--color-neutral-500);
+                "
+              >
+                Added to your TBR on March 12, 2024
+              </div>
+            </div>
+            <div class="type-row">
+              <div class="type-meta">
+                <span class="token-name">overline</span
+                ><span class="token-detail">12px / 500 / 0.05em</span>
+              </div>
+              <div
+                class="type-sample"
+                style="
+                  font-size: 12px;
+                  font-weight: 500;
+                  letter-spacing: 0.05em;
+                  text-transform: uppercase;
+                  color: var(--color-green-600);
+                "
+              >
+                Your cozy librarian
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Font weights</h3>
+          <p>
+            Only three weights. Never use 700/bold &mdash; the app should feel
+            light.
+          </p>
+          <ul>
+            <li>
+              <strong style="font-weight: 400">400</strong> &mdash; Regular
+              (body text, descriptions)
+            </li>
+            <li>
+              <strong style="font-weight: 500">500</strong> &mdash; Medium
+              (labels, buttons, navigation)
+            </li>
+            <li>
+              <strong style="font-weight: 600">600</strong> &mdash; Semibold
+              (headings only)
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Spacing & Layout -->
+      <section class="section" id="spacing">
+        <div class="section-header">
+          <h2>Spacing, radius &amp; layout</h2>
+          <p>8px base grid with a 4px half-step for tight adjustments.</p>
+        </div>
+
+        <div class="subsection">
+          <h3>Spacing scale</h3>
+          <div class="spacing-viz">
+            <div class="spacing-item">
+              <div class="spacing-bar" style="height: 4px"></div>
+              <div class="spacing-name">space-1</div>
+              <div class="spacing-px">4px</div>
+            </div>
+            <div class="spacing-item">
+              <div class="spacing-bar" style="height: 8px"></div>
+              <div class="spacing-name">space-2</div>
+              <div class="spacing-px">8px</div>
+            </div>
+            <div class="spacing-item">
+              <div class="spacing-bar" style="height: 12px"></div>
+              <div class="spacing-name">space-3</div>
+              <div class="spacing-px">12px</div>
+            </div>
+            <div class="spacing-item">
+              <div class="spacing-bar" style="height: 16px"></div>
+              <div class="spacing-name">space-4</div>
+              <div class="spacing-px">16px</div>
+            </div>
+            <div class="spacing-item">
+              <div class="spacing-bar" style="height: 20px"></div>
+              <div class="spacing-name">space-5</div>
+              <div class="spacing-px">20px</div>
+            </div>
+            <div class="spacing-item">
+              <div class="spacing-bar" style="height: 24px"></div>
+              <div class="spacing-name">space-6</div>
+              <div class="spacing-px">24px</div>
+            </div>
+            <div class="spacing-item">
+              <div class="spacing-bar" style="height: 32px"></div>
+              <div class="spacing-name">space-8</div>
+              <div class="spacing-px">32px</div>
+            </div>
+            <div class="spacing-item">
+              <div class="spacing-bar" style="height: 40px"></div>
+              <div class="spacing-name">space-10</div>
+              <div class="spacing-px">40px</div>
+            </div>
+            <div class="spacing-item">
+              <div class="spacing-bar" style="height: 48px"></div>
+              <div class="spacing-name">space-12</div>
+              <div class="spacing-px">48px</div>
+            </div>
+            <div class="spacing-item">
+              <div class="spacing-bar" style="height: 64px"></div>
+              <div class="spacing-name">space-16</div>
+              <div class="spacing-px">64px</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Border radius</h3>
+          <div class="radius-row">
+            <div class="radius-item">
+              <div class="radius-box" style="border-radius: 6px"></div>
+              <div class="radius-label">radius-sm</div>
+              <div class="radius-value">6px</div>
+            </div>
+            <div class="radius-item">
+              <div class="radius-box" style="border-radius: 12px"></div>
+              <div class="radius-label">radius-md</div>
+              <div class="radius-value">12px</div>
+            </div>
+            <div class="radius-item">
+              <div class="radius-box" style="border-radius: 16px"></div>
+              <div class="radius-label">radius-lg</div>
+              <div class="radius-value">16px</div>
+            </div>
+            <div class="radius-item">
+              <div class="radius-box" style="border-radius: 24px"></div>
+              <div class="radius-label">radius-xl</div>
+              <div class="radius-value">24px</div>
+            </div>
+            <div class="radius-item">
+              <div
+                class="radius-box"
+                style="border-radius: 9999px; width: 64px"
+              ></div>
+              <div class="radius-label">radius-full</div>
+              <div class="radius-value">9999px</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Shadows</h3>
+          <div class="shadow-row">
+            <div class="shadow-item">
+              <div
+                class="shadow-box"
+                style="box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05)"
+              ></div>
+              <div class="shadow-label">shadow-sm</div>
+            </div>
+            <div class="shadow-item">
+              <div
+                class="shadow-box"
+                style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08)"
+              ></div>
+              <div class="shadow-label">shadow-md</div>
+            </div>
+            <div class="shadow-item">
+              <div
+                class="shadow-box"
+                style="box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12)"
+              ></div>
+              <div class="shadow-label">shadow-lg</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Breakpoints</h3>
+          <p>Mobile-first. Max content width: <strong>480px</strong>.</p>
+          <table class="token-table" style="margin-top: var(--space-3)">
+            <thead>
+              <tr>
+                <th>Token</th>
+                <th>Value</th>
+                <th>Usage</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="token-name">mobile</td>
+                <td class="token-value">0 &ndash; 639px</td>
+                <td class="token-usage">Primary design target</td>
+              </tr>
+              <tr>
+                <td class="token-name">tablet</td>
+                <td class="token-value">640px+</td>
+                <td class="token-usage">Two-column layouts</td>
+              </tr>
+              <tr>
+                <td class="token-name">desktop</td>
+                <td class="token-value">1024px+</td>
+                <td class="token-usage">Max-width container</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Components -->
+      <section class="section" id="components">
+        <div class="section-header">
+          <h2>Components</h2>
+          <p>Interactive building blocks styled with the brand tokens.</p>
+        </div>
+
+        <div class="subsection">
+          <h3>Buttons</h3>
+          <div class="preview-box">
+            <button class="btn btn-primary">Help me choose</button>
+            <button class="btn btn-secondary">Import my TBR</button>
+            <button class="btn btn-ghost">Skip for now</button>
+          </div>
+          <table class="token-table">
+            <thead>
+              <tr>
+                <th>Variant</th>
+                <th>Background</th>
+                <th>Text</th>
+                <th>Border</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="token-name">primary</td>
+                <td class="token-value">green-500</td>
+                <td class="token-value">#ffffff</td>
+                <td class="token-value">none</td>
+              </tr>
+              <tr>
+                <td class="token-name">secondary</td>
+                <td class="token-value">transparent</td>
+                <td class="token-value">green-600</td>
+                <td class="token-value">1.5px green-500</td>
+              </tr>
+              <tr>
+                <td class="token-name">ghost</td>
+                <td class="token-value">transparent</td>
+                <td class="token-value">neutral-600</td>
+                <td class="token-value">none</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="subsection">
+          <h3>Quiz option chips</h3>
+          <div class="preview-box">
+            <span class="chip selected">Cozy</span>
+            <span class="chip">Emotional</span>
+            <span class="chip">Fast-paced</span>
+            <span class="chip">Romantic</span>
+            <span class="chip">Dark</span>
+            <span class="chip">Hopeful</span>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Input fields</h3>
+          <div class="preview-box">
+            <input
+              class="input-preview"
+              type="text"
+              placeholder="Search your bookshelf..."
+            />
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Book card</h3>
+          <div class="preview-box">
+            <div class="card-preview">
+              <div class="card-cover">
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#2d8a56"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                </svg>
+              </div>
+              <div class="card-body">
+                <h4>The Night Circus</h4>
+                <div class="author">Erin Morgenstern</div>
+                <div class="meta">
+                  <span>387 pages</span>
+                  <span>4.1 &#9733;</span>
+                  <span>Fantasy</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Motion -->
+      <section class="section" id="motion">
+        <div class="section-header">
+          <h2>Motion</h2>
+          <p>Subtle and purposeful. The app should feel calm, not bouncy.</p>
+        </div>
+        <div class="subsection">
+          <div class="motion-row">
+            <div class="motion-pattern">Micro-interaction</div>
+            <div class="motion-duration">150ms</div>
+            <div class="motion-easing">ease-out</div>
+            <div class="motion-usage">Button press, toggle</div>
+          </div>
+          <div class="motion-row">
+            <div class="motion-pattern">Transition</div>
+            <div class="motion-duration">250ms</div>
+            <div class="motion-easing">ease-in-out</div>
+            <div class="motion-usage">Screen transitions, card expand</div>
+          </div>
+          <div class="motion-row">
+            <div class="motion-pattern">Entrance</div>
+            <div class="motion-duration">300ms</div>
+            <div class="motion-easing">ease-out</div>
+            <div class="motion-usage">Page load, results appear</div>
+          </div>
+          <div class="motion-row">
+            <div class="motion-pattern">Spinner</div>
+            <div class="motion-duration">2&ndash;4s</div>
+            <div class="motion-easing">decelerate</div>
+            <div class="motion-usage">Roulette spin animation</div>
+          </div>
+        </div>
+        <div class="subsection" style="margin-top: var(--space-4)">
+          <p style="font-size: 13px">
+            <strong style="font-weight: 500">Reduced motion:</strong> Respect
+            <code
+              style="
+                font-size: 12px;
+                background: var(--color-neutral-100);
+                padding: 2px 6px;
+                border-radius: 4px;
+              "
+              >prefers-reduced-motion</code
+            >. Replace all animations with instant state changes.
+          </p>
+        </div>
+      </section>
+
+      <!-- Voice & Tone -->
+      <section class="section" id="voice">
+        <div class="section-header">
+          <h2>Voice &amp; tone</h2>
+          <p>
+            A cozy, knowledgeable librarian &mdash; friendly, warm, and gently
+            decisive.
+          </p>
+        </div>
+        <div class="do-dont-grid">
+          <div class="do-card">
+            <h4>Do</h4>
+            <ul>
+              <li>Use conversational, warm language</li>
+              <li>Be encouraging ("Great choice!")</li>
+              <li>Keep it brief &mdash; one thought per screen</li>
+              <li>Use sentence case throughout</li>
+            </ul>
+          </div>
+          <div class="dont-card">
+            <h4>Don't</h4>
+            <ul>
+              <li>Sound robotic or clinical</li>
+              <li>Use jargon or technical language</li>
+              <li>Be overly enthusiastic or exclamatory</li>
+              <li>Use passive voice</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Accessibility -->
+      <section class="section" id="accessibility">
+        <div class="section-header">
+          <h2>Accessibility</h2>
+          <p>Every reader deserves a great experience.</p>
+        </div>
+        <div class="a11y-grid">
+          <div class="a11y-item">
+            <div class="a11y-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M2 12h20" />
+              </svg>
+            </div>
+            <div class="a11y-text">
+              <strong>Color contrast</strong>WCAG AA minimum. Use green-700 for
+              small text on white.
+            </div>
+          </div>
+          <div class="a11y-item">
+            <div class="a11y-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </div>
+            <div class="a11y-text">
+              <strong>Tap targets</strong>Minimum 44&times;44px on mobile.
+            </div>
+          </div>
+          <div class="a11y-item">
+            <div class="a11y-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </div>
+            <div class="a11y-text">
+              <strong>Focus indicators</strong>Visible focus ring using
+              green-500 outline.
+            </div>
+          </div>
+          <div class="a11y-item">
+            <div class="a11y-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+              </svg>
+            </div>
+            <div class="a11y-text">
+              <strong>Screen readers</strong>All interactive elements labeled
+              with ARIA.
+            </div>
+          </div>
+          <div class="a11y-item">
+            <div class="a11y-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path d="M5 3l14 9-14 9V3z" />
+              </svg>
+            </div>
+            <div class="a11y-text">
+              <strong>Reduced motion</strong>Respect prefers-reduced-motion.
+            </div>
+          </div>
+          <div class="a11y-item">
+            <div class="a11y-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path
+                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                />
+              </svg>
+            </div>
+            <div class="a11y-text">
+              <strong>Font scaling</strong>Support 200% text zoom without
+              breakage.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tokens -->
+      <section class="section" id="tokens">
+        <div class="section-header">
+          <h2>CSS custom properties</h2>
+          <p>Copy-paste ready. Drop this into your root stylesheet.</p>
+        </div>
+        <div class="code-block">
+          <pre><span class="comment">/* Colors &mdash; Primary */</span>
+<span class="prop">--color-green-50</span>: <span class="val">#f0fdf4</span>;
+<span class="prop">--color-green-100</span>: <span class="val">#dcfce7</span>;
+<span class="prop">--color-green-200</span>: <span class="val">#bbf7d0</span>;
+<span class="prop">--color-green-300</span>: <span class="val">#86efac</span>;
+<span class="prop">--color-green-400</span>: <span class="val">#4ade80</span>;
+<span class="prop">--color-green-500</span>: <span class="val">#2d8a56</span>;
+<span class="prop">--color-green-600</span>: <span class="val">#1a6b3c</span>;
+<span class="prop">--color-green-700</span>: <span class="val">#15803d</span>;
+<span class="prop">--color-green-800</span>: <span class="val">#166534</span>;
+<span class="prop">--color-green-900</span>: <span class="val">#14532d</span>;
+
+<span class="comment">/* Colors &mdash; Neutral */</span>
+<span class="prop">--color-neutral-0</span>: <span class="val">#ffffff</span>;
+<span class="prop">--color-neutral-50</span>: <span class="val">#fafafa</span>;
+<span class="prop">--color-neutral-100</span>: <span class="val">#f5f5f5</span>;
+<span class="prop">--color-neutral-200</span>: <span class="val">#e5e5e5</span>;
+<span class="prop">--color-neutral-300</span>: <span class="val">#d4d4d4</span>;
+<span class="prop">--color-neutral-400</span>: <span class="val">#a3a3a3</span>;
+<span class="prop">--color-neutral-500</span>: <span class="val">#737373</span>;
+<span class="prop">--color-neutral-600</span>: <span class="val">#525252</span>;
+<span class="prop">--color-neutral-700</span>: <span class="val">#404040</span>;
+<span class="prop">--color-neutral-800</span>: <span class="val">#262626</span>;
+<span class="prop">--color-neutral-900</span>: <span class="val">#171717</span>;
+
+<span class="comment">/* Colors &mdash; Warm */</span>
+<span class="prop">--color-cream</span>: <span class="val">#fefcf3</span>;
+<span class="prop">--color-warm-gray</span>: <span class="val">#f7f5f0</span>;
+<span class="prop">--color-amber-400</span>: <span class="val">#fbbf24</span>;
+<span class="prop">--color-amber-500</span>: <span class="val">#f59e0b</span>;
+
+<span class="comment">/* Colors &mdash; Semantic */</span>
+<span class="prop">--color-success</span>: <span class="val">#2d8a56</span>;
+<span class="prop">--color-warning</span>: <span class="val">#f59e0b</span>;
+<span class="prop">--color-error</span>: <span class="val">#ef4444</span>;
+<span class="prop">--color-info</span>: <span class="val">#3b82f6</span>;
+
+<span class="comment">/* Typography */</span>
+<span class="prop">--font-primary</span>: <span class="val">'Inter', system-ui, sans-serif</span>;
+<span class="prop">--font-display</span>: <span class="val">'DM Serif Display', Georgia, serif</span>;
+
+<span class="comment">/* Spacing */</span>
+<span class="prop">--space-1</span>: <span class="val">4px</span>;
+<span class="prop">--space-2</span>: <span class="val">8px</span>;
+<span class="prop">--space-3</span>: <span class="val">12px</span>;
+<span class="prop">--space-4</span>: <span class="val">16px</span>;
+<span class="prop">--space-5</span>: <span class="val">20px</span>;
+<span class="prop">--space-6</span>: <span class="val">24px</span>;
+<span class="prop">--space-8</span>: <span class="val">32px</span>;
+<span class="prop">--space-10</span>: <span class="val">40px</span>;
+<span class="prop">--space-12</span>: <span class="val">48px</span>;
+<span class="prop">--space-16</span>: <span class="val">64px</span>;
+
+<span class="comment">/* Radius */</span>
+<span class="prop">--radius-sm</span>: <span class="val">6px</span>;
+<span class="prop">--radius-md</span>: <span class="val">12px</span>;
+<span class="prop">--radius-lg</span>: <span class="val">16px</span>;
+<span class="prop">--radius-xl</span>: <span class="val">24px</span>;
+<span class="prop">--radius-full</span>: <span class="val">9999px</span>;
+
+<span class="comment">/* Shadows */</span>
+<span class="prop">--shadow-sm</span>: <span class="val">0 1px 2px rgba(0,0,0,0.05)</span>;
+<span class="prop">--shadow-md</span>: <span class="val">0 4px 12px rgba(0,0,0,0.08)</span>;
+<span class="prop">--shadow-lg</span>: <span class="val">0 8px 24px rgba(0,0,0,0.12)</span>;
+
+<span class="comment">/* Layout */</span>
+<span class="prop">--max-content-width</span>: <span class="val">480px</span>;
+<span class="prop">--breakpoint-tablet</span>: <span class="val">640px</span>;
+<span class="prop">--breakpoint-desktop</span>: <span class="val">1024px</span>;</pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>Next Read Brand Guide &mdash; v1.0</p>
+      </div>
+    </footer>
+  </body>
+</html>
