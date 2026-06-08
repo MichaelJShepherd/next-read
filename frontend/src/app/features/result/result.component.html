@@ -1,0 +1,106 @@
+<div class="min-h-screen bg-[var(--color-cream)] flex flex-col items-center justify-center px-6 py-12">
+  <div class="w-full max-w-[400px] flex flex-col items-center gap-8">
+
+    <!-- Spinning phase -->
+    @if (phase() === 'spinning') {
+      <div class="flex flex-col items-center gap-6">
+        <p class="text-sm font-medium tracking-[0.1em] uppercase text-[var(--color-green-600)]">
+          Searching your shelves…
+        </p>
+        <div class="relative h-52 w-36 flex items-center justify-center">
+          @if (allPreviews()[spinIndex()]?.cover_url) {
+            <img
+              [src]="allPreviews()[spinIndex()].cover_url"
+              [alt]="allPreviews()[spinIndex()].title"
+              class="h-52 w-36 object-cover rounded-[var(--radius-md)] shadow-[var(--shadow-lg)] transition-none book-spin"
+            />
+          } @else {
+            <div class="h-52 w-36 rounded-[var(--radius-md)] bg-[var(--color-green-100)] shadow-[var(--shadow-lg)] book-spin"></div>
+          }
+        </div>
+        <div class="flex gap-1" aria-hidden="true">
+          @for (_ of [0,1,2]; track $index) {
+            <span class="block h-1.5 w-1.5 rounded-full bg-[var(--color-green-400)] animate-bounce"
+              [style.animation-delay]="($index * 150) + 'ms'"></span>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Reveal phase -->
+    @if (phase() === 'reveal' && currentBook()) {
+      <div class="flex flex-col items-center gap-6 w-full book-reveal">
+
+        @if (!accepted()) {
+          <p class="text-sm font-medium tracking-[0.1em] uppercase text-[var(--color-green-600)]">
+            Your next read
+          </p>
+        } @else {
+          <p class="text-sm font-medium tracking-[0.1em] uppercase text-[var(--color-green-600)]">
+            Enjoy the read! 📚
+          </p>
+        }
+
+        <!-- Book card -->
+        <div class="flex flex-col items-center gap-4 w-full">
+          @if (currentBook()!.cover_url) {
+            <img
+              [src]="currentBook()!.cover_url"
+              [alt]="currentBook()!.title + ' cover'"
+              class="h-64 w-44 object-cover rounded-[var(--radius-md)] shadow-[var(--shadow-lg)]"
+            />
+          } @else {
+            <div class="h-64 w-44 rounded-[var(--radius-md)] bg-[var(--color-green-100)] shadow-[var(--shadow-lg)] flex items-center justify-center">
+              <span class="text-5xl" aria-hidden="true">📖</span>
+            </div>
+          }
+
+          <div class="text-center">
+            <h2 class="font-display text-2xl text-[var(--color-neutral-800)] leading-tight">
+              {{ currentBook()!.title }}
+            </h2>
+            @if (currentBook()!.author) {
+              <p class="mt-1 text-sm text-[var(--color-neutral-500)]">{{ currentBook()!.author }}</p>
+            }
+            @if (currentBook()!.page_count) {
+              <p class="mt-1 text-xs text-[var(--color-neutral-400)]">{{ currentBook()!.page_count }} pages</p>
+            }
+          </div>
+        </div>
+
+        <!-- Actions -->
+        @if (!accepted()) {
+          <div class="flex flex-col gap-3 w-full">
+            <button
+              (click)="accept()"
+              class="h-12 w-full rounded-[var(--radius-md)] bg-[var(--color-green-500)] text-white text-sm font-medium transition-colors duration-150 hover:bg-[var(--color-green-600)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]">
+              This is the one!
+            </button>
+            @if (hasMore()) {
+              <button
+                (click)="respin()"
+                class="h-12 w-full rounded-[var(--radius-md)] border-[1.5px] border-[var(--color-neutral-300)] text-[var(--color-neutral-600)] text-sm font-medium transition-colors duration-150 hover:bg-[var(--color-neutral-100)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]">
+                Try another
+              </button>
+            }
+          </div>
+        } @else {
+          <div class="flex flex-col gap-3 w-full">
+            <button
+              (click)="restart()"
+              class="h-12 w-full rounded-[var(--radius-md)] border-[1.5px] border-[var(--color-green-500)] text-[var(--color-green-600)] text-sm font-medium transition-colors duration-150 hover:bg-[var(--color-green-50)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]">
+              Find another book
+            </button>
+            <button
+              (click)="goHome()"
+              class="h-12 w-full rounded-[var(--radius-md)] text-[var(--color-neutral-500)] text-sm font-medium transition-colors duration-150 hover:bg-[var(--color-neutral-100)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]">
+              Go home
+            </button>
+          </div>
+        }
+
+      </div>
+    }
+
+  </div>
+</div>

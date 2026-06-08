@@ -4,6 +4,7 @@
     "lib": ["deno.window"]
   },
   "imports": {
-    "std/": "https://deno.land/std@0.224.0/"
+    "std/": "https://deno.land/std@0.224.0/",
+    "node-html-parser": "npm:node-html-parser@^6.1.13"
   }
 }

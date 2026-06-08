@@ -1,0 +1,43 @@
+<div class="min-h-screen bg-[var(--color-cream)] flex flex-col items-center justify-center px-6 py-16">
+  <div class="w-full max-w-[480px] flex flex-col items-center text-center gap-6">
+
+    <img src="assets/logo.svg" alt="next read" class="h-16 w-auto" />
+
+    <div>
+      <p class="text-xs font-medium tracking-[0.1em] uppercase text-[var(--color-green-600)] mb-3">
+        Your cozy librarian
+      </p>
+      <h1 class="font-display text-4xl text-[var(--color-neutral-800)] leading-tight">
+        Find your next read
+      </h1>
+    </div>
+
+    <p class="text-[var(--color-neutral-500)] text-base max-w-[320px]">
+      Answer a few mood questions and let us pick the perfect book from your TBR.
+    </p>
+
+    @if (loading()) {
+      <div class="h-12"></div>
+    } @else if (hasBooks()) {
+      <div class="flex flex-col gap-3 w-full">
+        <button
+          (click)="goQuiz()"
+          class="h-12 w-full rounded-[var(--radius-md)] bg-[var(--color-green-500)] text-white text-sm font-medium transition-colors duration-150 hover:bg-[var(--color-green-600)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]">
+          Help me choose
+        </button>
+        <button
+          (click)="goImport()"
+          class="h-12 w-full rounded-[var(--radius-md)] border-[1.5px] border-[var(--color-green-500)] text-[var(--color-green-600)] text-sm font-medium transition-colors duration-150 hover:bg-[var(--color-green-50)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]">
+          Re-import my TBR
+        </button>
+      </div>
+    } @else {
+      <button
+        (click)="goImport()"
+        class="h-12 w-full rounded-[var(--radius-md)] bg-[var(--color-green-500)] text-white text-sm font-medium transition-colors duration-150 hover:bg-[var(--color-green-600)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]">
+        Import my TBR
+      </button>
+    }
+
+  </div>
+</div>

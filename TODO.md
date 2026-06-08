@@ -6,12 +6,15 @@
 ---
 
 ## Backlog
+
 > Known future work, not yet planned.
 
 ### 10. Goodreads profile import
+
 Depends on: 1
 
 #### Tasks
+
 - Accept Goodreads profile URL
 - Normalise and validate URL
 - Fetch profile HTML (edge function)
@@ -25,15 +28,18 @@ Depends on: 1
 - UI: URL input + import progress + confirmation screen
 
 #### Done when
+
 - Scraper works end-to-end for at least one real Goodreads profile
 - Missing fields are handled without errors
 - Repeated imports within 24 hours return cached data with clear user messaging
 - User can see their Want to Read list in the app
 
 ### 11. Recommendation engine + quiz
+
 Depends on: 1, 10
 
 #### Tasks
+
 - Design quiz question flow (moods, pace, length preference)
 - Build quiz step component with chip selection (brand chip tokens)
 - Build rules-based scoring engine with inputs: genre match, mood match, commitment level, avoidance filters, ratings, series information
@@ -42,13 +48,16 @@ Depends on: 1, 10
 - Display ranked results from TBR
 
 #### Done when
+
 - Engine returns ranked results that are deterministic and unit-testable
 - User completes quiz and receives ≥1 ranked book recommendation from their TBR
 
 ### 12. Roulette spin animation
+
 Depends on: 11
 
 #### Tasks
+
 - Implement roulette spinner component (2–4s decelerate easing)
 - Respect `prefers-reduced-motion` (instant reveal fallback)
 - Allow respin
@@ -56,34 +65,42 @@ Depends on: 11
 - Wire to recommendation result reveal
 
 #### Done when
+
 - Spinner resolves to a single book recommendation with correct motion behaviour
 - Respin and accept actions work correctly on mobile
 
 ### 13. MVP validation
+
 Depends on: 2, 12
 
 #### Tasks
+
 - Smoke test full end-to-end flow (import → quiz → spin → accept)
 - Validate analytics events fire at each step
 - Validate recommendation completion flow with a real TBR
 
 #### Done when
+
 - An internal tester can complete the full recommendation flow successfully in production
 
 ---
 
 ## To Do
+
 > Scoped and ready to pick up.
 
 ---
 
 ## In Progress
+
 > Actively being worked (keep this short — ideally one item).
 
 ### 1. Bootstrap
+
 Depends on: —
 
 #### Tasks
+
 - [x] B0 Preflight checks
 - [x] B1 Root CLAUDE.md
 - [x] B2 TODO.md kanban
@@ -96,6 +113,7 @@ Depends on: —
 - [x] B9 README
 
 #### Done when
+
 - All CI workflows pass on a PR into `development`
 - Frontend builds in production mode
 - Supabase migration applies cleanly with RLS enabled
@@ -104,12 +122,15 @@ Depends on: —
 ---
 
 ## In Review
+
 > PR open / awaiting review.
 
 ### 2. Part C — infrastructure finish-up
+
 Depends on: 1
 
 #### Tasks
+
 - [ ] Create GitHub Environments (`production` and `staging`)
 - [ ] Set `SUPABASE_PROJECT_ID` variable on each environment
 - [ ] Set `CLOUDFLARE_PAGES_PROJECT` variable on each environment
@@ -123,6 +144,7 @@ Depends on: 1
 - [ ] Set Supabase auth Site URL / redirect URLs per environment
 
 #### Done when
+
 - Staging deploys cleanly from `development`
 - Production deploys cleanly from `main`
 - Branch protection prevents direct pushes to both branches
@@ -130,16 +152,21 @@ Depends on: 1
 ---
 
 ## Done
+
 > Merged and verified.
 
 ---
 
 ### Task template
+
 ### <n>. <Short title>
+
 Depends on: <task numbers, if any>
 
 #### Tasks
+
 - <subtask>
 
 #### Done when
+
 - <clear, testable acceptance criteria>
