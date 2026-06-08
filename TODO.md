@@ -1,144 +1,96 @@
-# Goodreads TBR Recommendation App — Development Kanban Plan
+# Next Read — Kanban
 
-## Board Instructions for Coding Agent
-
-Use this document as the working development board.
-
-Rules:
-
-- Move only one task into **In Progress** at a time unless tasks are clearly independent.
-- When starting a task, move it from **TODO** to **In Progress**.
-- When complete, move it from **In Progress** to **Done**.
-- Do not skip acceptance criteria.
-- If blocked, add a short blocker note under the task.
+> Track delivery status here. The product spec is the source of truth for behaviour;
+> when they disagree, the spec wins.
 
 ---
 
-# TODO
+## Backlog
+> Known future work, not yet planned.
 
-## 1. Project Setup
+### 10. Goodreads TBR import
+Depends on: 1
 
-### 1.1 Create Angular project
+#### Tasks
+- Accept Goodreads export CSV
+- Build CSV parser + validation
+- Map to internal book schema
+- UI: file upload + import confirmation screen
 
-- [ ] Create new Angular standalone project
-- [ ] Enable routing
-- [ ] Configure mobile-first structure
-- [ ] Add base environment files
-- [ ] Add linting/formatting
-- [ ] Add path aliases if useful
+#### Done when
+- User can upload a Goodreads export CSV and see their TBR list in the app
 
-Acceptance criteria:
+### 11. Mood-based recommendation quiz
+Depends on: 1, 10
 
-- [ ] App runs locally
-- [ ] Routes can be added cleanly
-- [ ] Project structure is ready for feature modules/components
+#### Tasks
+- Design quiz question flow (moods, pace, length preference)
+- Build quiz step component with chip selection
+- Connect to recommendation engine / AI call
+- Display ranked results from TBR
 
----
+#### Done when
+- User completes quiz and receives ≥1 ranked book recommendation from their TBR
 
-### 1.2 Configure Supabase client
+### 12. Roulette spin animation
+Depends on: 11
 
-- [ ] Install Supabase JS client
-- [ ] Add Supabase environment variables
-- [ ] Create Supabase service wrapper
-- [ ] Add anonymous sign-in initialization
-- [ ] Ensure session hydration before protected app logic runs
+#### Tasks
+- Implement roulette spinner component (2–4s decelerate, prefers-reduced-motion fallback)
+- Wire to recommendation result reveal
 
-Acceptance criteria:
-
-- [ ] Anonymous user is created automatically
-- [ ] Session persists across refresh
-- [ ] App can access current user ID
-
----
-
-## 2. Goodreads Scraping Risk Stream
-
-### 2.1 Build Goodreads scraping proof of concept
-
-- [ ] Accept Goodreads profile URL
-- [ ] Normalize/validate URL
-- [ ] Fetch profile HTML
-- [ ] Extract Want to Read shelf data
-- [ ] Extract title, author, cover URL, synopsis, page count, and rating where possible
-
-Acceptance criteria:
-
-- [ ] Scraper works for at least one real profile
-- [ ] Failure modes are documented
-- [ ] Missing metadata is handled gracefully
+#### Done when
+- Spinner resolves to a single book recommendation with correct motion behaviour
 
 ---
 
-### 2.2 Implement scrape rate limiting
-
-- [ ] Prevent more than one scrape per profile per 24 hours
-- [ ] Return cached data if profile was scraped recently
-- [ ] Store scrape timestamps
-
-Acceptance criteria:
-
-- [ ] Repeated imports reuse cached data
-- [ ] User receives clear messaging about cached imports
+## To Do
+> Scoped and ready to pick up.
 
 ---
 
-## 3. Recommendation Engine
+## In Progress
+> Actively being worked (keep this short — ideally one item).
 
-### 3.1 Build rules-based scoring engine
+### 1. Bootstrap
+Depends on: —
 
-Scoring inputs:
+#### Tasks
+- [x] B0 Preflight checks
+- [x] B1 Root CLAUDE.md
+- [x] B2 TODO.md kanban
+- [ ] B3 Angular 22 + Tailwind v4 frontend scaffold
+- [ ] B4 Supabase initial migration + functions layout
+- [ ] B5 Frontend test + smoke harness
+- [ ] B6 GitHub Actions CI (branch-name, backend-test, frontend-test)
+- [ ] B7 GitHub Actions deploy-backend
+- [ ] B8 GitHub Actions deploy-frontend (Cloudflare Pages)
+- [ ] B9 README
 
-- [ ] Genre match
-- [ ] Mood match
-- [ ] Commitment level
-- [ ] Avoidance filters
-- [ ] Ratings
-- [ ] Series information
-
-Acceptance criteria:
-
-- [ ] Engine returns ranked results
-- [ ] Results are deterministic/testable
-
----
-
-## 4. Roulette Spinner
-
-### 4.1 Build spinner experience
-
-- [ ] Add animated roulette interaction
-- [ ] Respect reduced motion preference
-- [ ] Allow respin
-- [ ] Allow accepting result
-
-Acceptance criteria:
-
-- [ ] Spinner feels delightful
-- [ ] Spinner works smoothly on mobile
+#### Done when
+- All CI workflows pass on a PR into `development`
+- Frontend builds in production mode
+- Supabase migration applies cleanly with RLS enabled
+- README covers local dev setup end-to-end
 
 ---
 
-## 5. Deployment
-
-### 5.1 Deploy MVP
-
-- [ ] Deploy app
-- [ ] Smoke test full flow
-- [ ] Validate analytics events
-- [ ] Validate recommendation completion flow
-
-Acceptance criteria:
-
-- [ ] Internal tester can complete full recommendation flow successfully
+## In Review
+> PR open / awaiting review.
 
 ---
 
-# In Progress
-
-_No tasks currently in progress._
+## Done
+> Merged and verified.
 
 ---
 
-# Done
+### Task template
+### <n>. <Short title>
+Depends on: <task numbers, if any>
 
-_No tasks completed yet._
+#### Tasks
+- <subtask>
+
+#### Done when
+- <clear, testable acceptance criteria>

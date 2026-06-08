@@ -1,0 +1,23 @@
+name: Backend test
+
+on:
+  pull_request:
+    branches: [main, development]
+    paths: ['supabase/functions/**']
+
+jobs:
+  test:
+    name: Deno unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Run unit tests
+        run: |
+          if [ -n "$(find supabase/functions -name '*_test.ts' 2>/dev/null)" ]; then
+            deno test --allow-env --allow-net --config supabase/functions/deno.json supabase/functions/
+          else
+            echo "No edge function tests yet — skipping."
+          fi
