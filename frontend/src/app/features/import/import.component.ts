@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BooksService, NewBook } from '../../core/books.service';
 import { ImportService, ScrapedBook } from './import.service';
+import { extractGoodreadsUrl } from './goodreads-url';
 
 type Status = 'idle' | 'loading' | 'confirm' | 'saving' | 'error';
 
@@ -21,8 +22,18 @@ export class ImportComponent {
   protected readonly books = signal<ScrapedBook[]>([]);
   protected readonly errorMsg = signal('');
 
+  protected onPaste(event: ClipboardEvent): void {
+    const text = event.clipboardData?.getData('text') ?? '';
+    const extracted = extractGoodreadsUrl(text);
+    if (extracted !== text.trim()) {
+      // Pasted share text around the link — keep only the URL.
+      event.preventDefault();
+      this.url = extracted;
+    }
+  }
+
   protected async submit(): Promise<void> {
-    const trimmed = this.url.trim();
+    const trimmed = extractGoodreadsUrl(this.url);
     if (!trimmed) return;
     this.status.set('loading');
     this.errorMsg.set('');
@@ -40,7 +51,7 @@ export class ImportComponent {
     this.status.set('saving');
     try {
       await this.booksService.clearAll();
-      const newBooks: NewBook[] = this.books().map(b => ({
+      const newBooks: NewBook[] = this.books().map((b) => ({
         title: b.title,
         author: b.author,
         cover_url: b.cover_url,
