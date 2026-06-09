@@ -16,7 +16,7 @@ Deno.test('recommend — POST returns stub response', async () => {
   const res = await handler(req);
   assertEquals(res.status, 200);
   const json = await res.json();
-  assertEquals(json.error, null);
+  assertEquals(json.message, 'recommend stub');
 });
 
 Deno.test('recommend — non-POST returns 405', async () => {

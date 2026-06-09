@@ -1,0 +1,39 @@
+# Root .gitignore — repo-wide safety net.
+# frontend/ and supabase/ keep their own .gitignore for tool-specific output;
+# this covers things that must never be committed anywhere in the tree.
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+out-tsc/
+tmp/
+.angular/
+
+# Environment & secrets — never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+service-account*.json
+
+# Agent / editor directories
+.claude/
+.idea/
+.history/
+
+# Supabase local artefacts
+.branches/
+.temp/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# OS cruft
+.DS_Store
+Thumbs.db
+desktop.ini
