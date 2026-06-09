@@ -19,7 +19,8 @@ The app is not intended to replace Goodreads. It is designed to make Goodreads m
 - **Goodreads import** via the public RSS feed (`/review/list_rss/{id}?shelf=to-read`), parsed by the `import-goodreads` edge function with a 24h scrape cache. Imported books are stored in the browser's `localStorage`, not the database.
 - **Mood quiz** — a **3-step** flow (mood, commitment, avoidance), not the 5-question flow in §9. See §9 for the as-built questions.
 - **Rules-based scoring** running **client-side** (`quiz.service.ts`): genre/mood match, commitment-length fit, avoidance filter, and a high-rating bonus. Results are deterministic per score with a small ±1.5 jitter so near-ties vary between runs.
-- **3–5 results** as a card list; tapping a card opens a detail modal with cover, title, author, rating, page count, genres, and synopsis. Synopsis + genres are fetched on demand from **Open Library** and cached.
+- **3–5 results** as a card list; tapping a card opens a detail modal with cover, title, author, rating, page count, genres, synopsis, and a "Why this pick" explanation derived from the scoring reasons (mood match, length fit, high rating). Synopsis + genres are fetched on demand from **Open Library** and cached.
+- **Quiz guard rails** — the quiz shows an import prompt when the bookshelf is empty, keeps the user on the quiz with a friendly notice when no books match their filters, and restores previous answers when retrying ("Try different answers").
 - **Manual selection** → confirmation screen. This satisfies the core outcome ("select a book to read next").
 - **Anonymous tracking** — every visitor gets a persisted anonymous Supabase session. The recommendation (answers + the books shown) and the final selection are written to the `recommendations` table under RLS.
 

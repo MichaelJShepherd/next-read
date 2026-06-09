@@ -22,151 +22,200 @@
         </svg>
       </button>
       <!-- Progress dots -->
-      <div class="flex gap-2 ml-auto">
-        @for (s of ['mood', 'commitment', 'avoid']; track s) {
-          <div
-            class="h-2 rounded-full transition-all duration-200"
-            [class.w-6]="step() === s"
-            [class.w-2]="step() !== s"
-            [class.bg-[var(--color-green-500)]]="step() === s"
-            [class.bg-[var(--color-neutral-200)]]="step() !== s"
-          ></div>
-        }
-      </div>
+      @if (shelfState() === 'ready') {
+        <div class="flex gap-2 ml-auto" aria-hidden="true">
+          @for (s of steps; track s.id) {
+            <div
+              class="h-2 rounded-full transition-all duration-200"
+              [class.w-6]="step() === s.id"
+              [class.w-2]="step() !== s.id"
+              [class.bg-[var(--color-green-500)]]="step() === s.id"
+              [class.bg-[var(--color-green-200)]]="isStepDone(s.id)"
+              [class.bg-[var(--color-neutral-200)]]="step() !== s.id && !isStepDone(s.id)"
+            ></div>
+          }
+        </div>
+        <p class="sr-only" aria-live="polite">
+          Step {{ stepNumber() }} of {{ steps.length }}: {{ stepTitle() }}
+        </p>
+      }
     </div>
 
-    <!-- Step: Mood -->
-    @if (step() === 'mood') {
-      <div class="flex flex-col gap-5">
+    <!-- Empty bookshelf -->
+    @if (shelfState() === 'empty') {
+      <div class="flex flex-col items-center text-center gap-6 flex-1 justify-center">
+        <span class="text-5xl" aria-hidden="true">📚</span>
         <div>
           <h1 class="font-display text-2xl text-[var(--color-neutral-800)]">
-            How are you feeling?
+            Your bookshelf is empty
           </h1>
           <p class="mt-1 text-sm text-[var(--color-neutral-500)]">
-            Pick one or more moods. We'll find books to match.
+            Import your Goodreads to-read list first, and we'll help you pick from it.
           </p>
         </div>
-        <div class="grid grid-cols-2 gap-3" role="group" aria-label="Mood selection">
-          @for (mood of moods; track mood.id) {
-            <button
-              type="button"
-              (click)="toggleMood(mood.id)"
-              [attr.aria-pressed]="selectedMoods().has(mood.id)"
-              class="flex flex-col items-start gap-1 rounded-[var(--radius-md)] border-[1.5px] px-4 py-3 text-left transition-all duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]"
-              [class.border-[var(--color-green-500)]]="selectedMoods().has(mood.id)"
-              [class.bg-[var(--color-green-50)]]="selectedMoods().has(mood.id)"
-              [class.border-[var(--color-neutral-200)]]="!selectedMoods().has(mood.id)"
-              [class.bg-white]="!selectedMoods().has(mood.id)"
-            >
-              <span class="text-sm font-medium text-[var(--color-neutral-800)]">{{
-                mood.label
-              }}</span>
-            </button>
-          }
-        </div>
         <button
-          (click)="nextStep()"
-          [disabled]="!moodValid()"
-          class="h-12 w-full rounded-[var(--radius-md)] bg-[var(--color-green-500)] text-white text-sm font-medium transition-colors duration-150 hover:bg-[var(--color-green-600)] disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]"
+          (click)="goImport()"
+          class="h-12 w-full rounded-[var(--radius-md)] bg-[var(--color-green-500)] text-white text-sm font-medium transition-colors duration-150 hover:bg-[var(--color-green-600)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]"
         >
-          Next
+          Import my books
         </button>
       </div>
     }
 
-    <!-- Step: Commitment -->
-    @if (step() === 'commitment') {
-      <div class="flex flex-col gap-5">
-        <div>
-          <h1 class="font-display text-2xl text-[var(--color-neutral-800)]">
-            How much time do you have?
-          </h1>
-          <p class="mt-1 text-sm text-[var(--color-neutral-500)]">
-            Choose the kind of commitment you're up for.
-          </p>
-        </div>
-        <div class="flex flex-col gap-3" role="radiogroup" aria-label="Commitment level">
-          @for (opt of commitmentOptions; track opt.id) {
-            <button
-              type="button"
-              (click)="selectCommitment(opt.id)"
-              [attr.aria-checked]="selectedCommitment() === opt.id"
-              role="radio"
-              class="flex items-center gap-4 rounded-[var(--radius-md)] border-[1.5px] px-4 py-3 text-left transition-all duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]"
-              [class.border-[var(--color-green-500)]]="selectedCommitment() === opt.id"
-              [class.bg-[var(--color-green-50)]]="selectedCommitment() === opt.id"
-              [class.border-[var(--color-neutral-200)]]="selectedCommitment() !== opt.id"
-              [class.bg-white]="selectedCommitment() !== opt.id"
-            >
-              <div
-                class="h-5 w-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors duration-150"
-                [class.border-[var(--color-green-500)]]="selectedCommitment() === opt.id"
-                [class.border-[var(--color-neutral-300)]]="selectedCommitment() !== opt.id"
+    @if (shelfState() === 'ready') {
+      <!-- Step: Mood -->
+      @if (step() === 'mood') {
+        <div class="flex flex-col gap-5">
+          <div>
+            <h1 class="font-display text-2xl text-[var(--color-neutral-800)]">
+              How are you feeling?
+            </h1>
+            <p class="mt-1 text-sm text-[var(--color-neutral-500)]">
+              Pick one or more moods. We'll find books to match.
+            </p>
+          </div>
+          <div class="grid grid-cols-2 gap-3" role="group" aria-label="Mood selection">
+            @for (mood of moods; track mood.id) {
+              <button
+                type="button"
+                (click)="toggleMood(mood.id)"
+                [attr.aria-pressed]="selectedMoods().has(mood.id)"
+                class="flex flex-col items-start gap-1 rounded-[var(--radius-md)] border-[1.5px] px-4 py-3 text-left transition-all duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]"
+                [class.border-[var(--color-green-500)]]="selectedMoods().has(mood.id)"
+                [class.bg-[var(--color-green-50)]]="selectedMoods().has(mood.id)"
+                [class.border-[var(--color-neutral-200)]]="!selectedMoods().has(mood.id)"
+                [class.bg-white]="!selectedMoods().has(mood.id)"
               >
-                @if (selectedCommitment() === opt.id) {
-                  <div class="h-2.5 w-2.5 rounded-full bg-[var(--color-green-500)]"></div>
-                }
-              </div>
-              <div>
-                <p class="text-sm font-medium text-[var(--color-neutral-800)]">{{ opt.label }}</p>
-                <p class="text-xs text-[var(--color-neutral-500)]">{{ opt.sub }}</p>
-              </div>
-            </button>
-          }
+                <span aria-hidden="true">{{ mood.emoji }}</span>
+                <span class="text-sm font-medium text-[var(--color-neutral-800)]">{{
+                  mood.label
+                }}</span>
+              </button>
+            }
+          </div>
+          <button
+            (click)="nextStep()"
+            [disabled]="!moodValid()"
+            class="h-12 w-full rounded-[var(--radius-md)] bg-[var(--color-green-500)] text-white text-sm font-medium transition-colors duration-150 hover:bg-[var(--color-green-600)] disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]"
+          >
+            Next
+          </button>
         </div>
-        <button
-          (click)="nextStep()"
-          [disabled]="!commitmentValid()"
-          class="h-12 w-full rounded-[var(--radius-md)] bg-[var(--color-green-500)] text-white text-sm font-medium transition-colors duration-150 hover:bg-[var(--color-green-600)] disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]"
-        >
-          Next
-        </button>
-      </div>
-    }
+      }
 
-    <!-- Step: Avoid -->
-    @if (step() === 'avoid') {
-      <div class="flex flex-col gap-5">
-        <div>
-          <h1 class="font-display text-2xl text-[var(--color-neutral-800)]">Anything to avoid?</h1>
-          <p class="mt-1 text-sm text-[var(--color-neutral-500)]">
-            Optional — skip if you're open to anything.
-          </p>
+      <!-- Step: Commitment -->
+      @if (step() === 'commitment') {
+        <div class="flex flex-col gap-5">
+          <div>
+            <h1 class="font-display text-2xl text-[var(--color-neutral-800)]">
+              How much time do you have?
+            </h1>
+            <p class="mt-1 text-sm text-[var(--color-neutral-500)]">
+              Choose the kind of commitment you're up for.
+            </p>
+          </div>
+          <div class="flex flex-col gap-3" role="radiogroup" aria-label="Commitment level">
+            @for (opt of commitmentOptions; track opt.id; let i = $index) {
+              <button
+                #commitmentRadio
+                type="button"
+                (click)="selectCommitment(opt.id)"
+                (keydown)="onCommitmentKeydown($event, i)"
+                [attr.aria-checked]="selectedCommitment() === opt.id"
+                [tabindex]="commitmentTabindex(opt.id, i)"
+                role="radio"
+                class="flex items-center gap-4 rounded-[var(--radius-md)] border-[1.5px] px-4 py-3 text-left transition-all duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]"
+                [class.border-[var(--color-green-500)]]="selectedCommitment() === opt.id"
+                [class.bg-[var(--color-green-50)]]="selectedCommitment() === opt.id"
+                [class.border-[var(--color-neutral-200)]]="selectedCommitment() !== opt.id"
+                [class.bg-white]="selectedCommitment() !== opt.id"
+              >
+                <div
+                  class="h-5 w-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors duration-150"
+                  [class.border-[var(--color-green-500)]]="selectedCommitment() === opt.id"
+                  [class.border-[var(--color-neutral-300)]]="selectedCommitment() !== opt.id"
+                >
+                  @if (selectedCommitment() === opt.id) {
+                    <div class="h-2.5 w-2.5 rounded-full bg-[var(--color-green-500)]"></div>
+                  }
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-[var(--color-neutral-800)]">{{ opt.label }}</p>
+                  <p class="text-xs text-[var(--color-neutral-500)]">{{ opt.sub }}</p>
+                </div>
+              </button>
+            }
+          </div>
+          <button
+            (click)="nextStep()"
+            [disabled]="!commitmentValid()"
+            class="h-12 w-full rounded-[var(--radius-md)] bg-[var(--color-green-500)] text-white text-sm font-medium transition-colors duration-150 hover:bg-[var(--color-green-600)] disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]"
+          >
+            Next
+          </button>
         </div>
-        <div class="flex flex-wrap gap-3" role="group" aria-label="Genres to avoid">
-          @for (opt of avoidOptions; track opt.id) {
-            <button
-              type="button"
-              (click)="toggleAvoid(opt.id)"
-              [attr.aria-pressed]="selectedAvoid().has(opt.id)"
-              class="h-9 px-4 rounded-full border-[1.5px] text-sm font-medium transition-all duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]"
-              [class.border-[var(--color-neutral-800)]]="selectedAvoid().has(opt.id)"
-              [class.bg-[var(--color-neutral-800)]]="selectedAvoid().has(opt.id)"
-              [class.text-white]="selectedAvoid().has(opt.id)"
-              [class.border-[var(--color-neutral-200)]]="!selectedAvoid().has(opt.id)"
-              [class.text-[var(--color-neutral-700)]]="!selectedAvoid().has(opt.id)"
+      }
+
+      <!-- Step: Avoid -->
+      @if (step() === 'avoid') {
+        <div class="flex flex-col gap-5">
+          <div>
+            <h1 class="font-display text-2xl text-[var(--color-neutral-800)]">
+              Anything to avoid?
+            </h1>
+            <p class="mt-1 text-sm text-[var(--color-neutral-500)]">
+              Optional — skip if you're open to anything.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-3" role="group" aria-label="Genres to avoid">
+            @for (opt of avoidOptions; track opt.id) {
+              <button
+                type="button"
+                (click)="toggleAvoid(opt.id)"
+                [attr.aria-pressed]="selectedAvoid().has(opt.id)"
+                class="h-11 px-4 rounded-full border-[1.5px] text-sm font-medium transition-all duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]"
+                [class.border-[var(--color-green-500)]]="selectedAvoid().has(opt.id)"
+                [class.bg-[var(--color-green-50)]]="selectedAvoid().has(opt.id)"
+                [class.text-[var(--color-green-700)]]="selectedAvoid().has(opt.id)"
+                [class.border-[var(--color-neutral-200)]]="!selectedAvoid().has(opt.id)"
+                [class.text-[var(--color-neutral-700)]]="!selectedAvoid().has(opt.id)"
+              >
+                {{ opt.label }}
+              </button>
+            }
+          </div>
+
+          @if (noMatches()) {
+            <div
+              role="status"
+              class="rounded-[var(--radius-md)] bg-[var(--color-warm-gray)] border border-[var(--color-neutral-200)] px-4 py-3"
             >
-              {{ opt.label }}
-            </button>
+              <p class="text-sm font-medium text-[var(--color-neutral-800)]">
+                No books on your shelf match these filters.
+              </p>
+              <p class="mt-1 text-sm text-[var(--color-neutral-500)]">
+                Try removing a genre above, or go back and pick a different mood or length.
+              </p>
+            </div>
           }
+
+          @if (errorMsg()) {
+            <p role="alert" class="text-sm text-[var(--color-error)]">{{ errorMsg() }}</p>
+          }
+
+          <button
+            (click)="findMyBook()"
+            [disabled]="loading()"
+            class="h-12 w-full rounded-[var(--radius-md)] bg-[var(--color-green-500)] text-white text-sm font-medium transition-colors duration-150 hover:bg-[var(--color-green-600)] disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]"
+          >
+            @if (loading()) {
+              Finding your book…
+            } @else {
+              Find my next read
+            }
+          </button>
         </div>
-
-        @if (errorMsg()) {
-          <p role="alert" class="text-sm text-[var(--color-error)]">{{ errorMsg() }}</p>
-        }
-
-        <button
-          (click)="findMyBook()"
-          [disabled]="loading()"
-          class="h-12 w-full rounded-[var(--radius-md)] bg-[var(--color-green-500)] text-white text-sm font-medium transition-colors duration-150 hover:bg-[var(--color-green-600)] disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]"
-        >
-          @if (loading()) {
-            Finding your book…
-          } @else {
-            Find my next read
-          }
-        </button>
-      </div>
+      }
     }
   </div>
 </div>
