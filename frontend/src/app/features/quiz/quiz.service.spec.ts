@@ -67,6 +67,34 @@ describe('QuizService', () => {
     expect(miss.reasons).toEqual([]);
   });
 
+  it('matches spicy and nostalgic moods against their genres', async () => {
+    books = [
+      makeBook({ id: 'steamy', genres: ['dark romance'] }),
+      makeBook({ id: 'period-piece', genres: ['historical fiction'] }),
+      makeBook({ id: 'unrelated', genres: ['business'] }),
+    ];
+    const picks = await service.computePicks(answers({ moods: ['spicy', 'nostalgic'] }));
+    expect(pickFor(picks, 'steamy').reasons).toContain('Matches your spicy mood');
+    expect(pickFor(picks, 'period-piece').reasons).toContain('Matches your nostalgic mood');
+    expect(pickFor(picks, 'unrelated').score).toBe(0);
+  });
+
+  it('matches escapist, dark, romantic and curious moods against their genres', async () => {
+    books = [
+      makeBook({ id: 'dragons', genres: ['fantasy'] }),
+      makeBook({ id: 'gothic', genres: ['gothic'] }),
+      makeBook({ id: 'meet-cute', genres: ['romantic comedy'] }),
+      makeBook({ id: 'pop-sci', genres: ['nonfiction'] }),
+    ];
+    const picks = await service.computePicks(
+      answers({ moods: ['escapist', 'dark', 'romantic', 'curious'] }),
+    );
+    expect(pickFor(picks, 'dragons').reasons).toContain('Matches your escapist mood');
+    expect(pickFor(picks, 'gothic').reasons).toContain('Matches your dark mood');
+    expect(pickFor(picks, 'meet-cute').reasons).toContain('Matches your romantic mood');
+    expect(pickFor(picks, 'pop-sci').reasons).toContain('Matches your curious mood');
+  });
+
   it('rewards a commitment fit and penalises a mismatch', async () => {
     books = [
       makeBook({ id: 'fits', page_count: 250 }),

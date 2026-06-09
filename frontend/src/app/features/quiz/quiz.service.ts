@@ -1,7 +1,19 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Book, BooksService } from '../../core/books.service';
 
-export type Mood = 'adventurous' | 'cozy' | 'emotional' | 'thrilling' | 'funny' | 'inspiring';
+export type Mood =
+  | 'adventurous'
+  | 'cozy'
+  | 'emotional'
+  | 'thrilling'
+  | 'funny'
+  | 'inspiring'
+  | 'romantic'
+  | 'spicy'
+  | 'nostalgic'
+  | 'escapist'
+  | 'dark'
+  | 'curious';
 export type Commitment = 'short' | 'medium' | 'long' | 'any';
 
 export interface QuizAnswers {
@@ -24,6 +36,12 @@ const MOOD_GENRES: Record<Mood, string[]> = {
   thrilling: ['thriller', 'mystery', 'horror', 'suspense', 'crime'],
   funny: ['humor', 'comedy', 'satire', 'contemporary fiction', 'comic'],
   inspiring: ['biography', 'memoir', 'self-help', 'historical fiction', 'inspirational'],
+  romantic: ['romance', 'romantic comedy', 'love story', 'chick lit', 'contemporary romance'],
+  spicy: ['romance', 'erotica', 'romantasy', 'new adult', 'dark romance'],
+  nostalgic: ['historical fiction', 'historical romance', 'classics', 'history'],
+  escapist: ['fantasy', 'science fiction', 'sci-fi', 'paranormal', 'dystopia', 'romantasy'],
+  dark: ['horror', 'gothic', 'dark fantasy', 'dark romance', 'true crime', 'dystopia'],
+  curious: ['non-fiction', 'nonfiction', 'science', 'history', 'psychology', 'philosophy'],
 };
 
 const PAGE_RANGES: Record<Commitment, [number, number] | null> = {

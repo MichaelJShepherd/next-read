@@ -29,6 +29,12 @@ const MOODS: { id: Mood; label: string; emoji: string }[] = [
   { id: 'thrilling', label: 'Thrilling', emoji: '⚡' },
   { id: 'funny', label: 'Funny', emoji: '😄' },
   { id: 'inspiring', label: 'Inspiring', emoji: '✨' },
+  { id: 'romantic', label: 'Romantic', emoji: '💕' },
+  { id: 'spicy', label: 'Spicy', emoji: '🌶️' },
+  { id: 'nostalgic', label: 'Nostalgic', emoji: '🕰️' },
+  { id: 'escapist', label: 'Escapist', emoji: '🐉' },
+  { id: 'dark', label: 'Dark', emoji: '🌙' },
+  { id: 'curious', label: 'Curious', emoji: '🔍' },
 ];
 
 const COMMITMENT_OPTIONS: { id: Commitment; label: string; sub: string }[] = [
@@ -45,6 +51,11 @@ const AVOID_OPTIONS: { id: string; label: string }[] = [
   { id: 'fantasy', label: 'Fantasy' },
   { id: 'non-fiction', label: 'Non-fiction' },
   { id: 'self-help', label: 'Self-help' },
+  { id: 'thriller', label: 'Thriller' },
+  { id: 'young adult', label: 'Young adult' },
+  { id: 'historical', label: 'Historical' },
+  { id: 'memoir', label: 'Memoir' },
+  { id: 'erotica', label: 'Spice' },
 ];
 
 @Component({
