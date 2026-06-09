@@ -1,7 +1,8 @@
 # Next Read — Kanban
 
 > Track delivery status here. The product spec is the source of truth for behaviour;
-> when they disagree, the spec wins.
+> when they disagree, the spec wins. Where the build has deliberately diverged from
+> the spec, the divergence is noted on the relevant task and reflected back into the spec.
 
 ---
 
@@ -9,79 +10,83 @@
 
 > Known future work, not yet planned.
 
-### 10. Goodreads profile import
-
-Depends on: 1
-
-#### Tasks
-
-- Accept Goodreads profile URL
-- Normalise and validate URL
-- Fetch profile HTML (edge function)
-- Extract Want to Read shelf data
-- Extract title, author, cover URL, synopsis, page count, and rating where available
-- Handle missing metadata gracefully
-- Document known failure modes
-- Prevent more than one scrape per profile per 24 hours
-- Return cached data if profile was scraped recently
-- Store scrape timestamps
-- UI: URL input + import progress + confirmation screen
-
-#### Done when
-
-- Scraper works end-to-end for at least one real Goodreads profile
-- Missing fields are handled without errors
-- Repeated imports within 24 hours return cached data with clear user messaging
-- User can see their Want to Read list in the app
-
-### 11. Recommendation engine + quiz
-
-Depends on: 1, 10
-
-#### Tasks
-
-- Design quiz question flow (moods, pace, length preference)
-- Build quiz step component with chip selection (brand chip tokens)
-- Build rules-based scoring engine with inputs: genre match, mood match, commitment level, avoidance filters, ratings, series information
-- Engine returns deterministic, testable ranked results
-- Connect quiz answers to scoring engine
-- Display ranked results from TBR
-
-#### Done when
-
-- Engine returns ranked results that are deterministic and unit-testable
-- User completes quiz and receives ≥1 ranked book recommendation from their TBR
-
-### 12. Roulette spin animation
+### 12. Roulette / spinner selection
 
 Depends on: 11
 
+> Deferred. Manual selection (tap a book → detail modal → confirm) is implemented and
+> covers the "select a book" outcome. The spec's roulette spinner is an optional,
+> additive way to pick between the 3–5 results and has not been built. A `book-spin`
+> CSS keyframe exists in `styles.css` but is currently unused.
+
 #### Tasks
 
-- Implement roulette spinner component (2–4s decelerate easing)
+- Implement roulette spinner component (2–4s decelerate easing) over the 3–5 results
 - Respect `prefers-reduced-motion` (instant reveal fallback)
-- Allow respin
-- Allow accepting result
-- Wire to recommendation result reveal
+- Allow respin and accept
+- Wire to the existing result reveal
 
 #### Done when
 
-- Spinner resolves to a single book recommendation with correct motion behaviour
-- Respin and accept actions work correctly on mobile
+- Spinner resolves to a single book with correct motion behaviour
+- Respin and accept work on mobile
 
-### 13. MVP validation
+### 16. Book status: mark in progress / completed
 
-Depends on: 2, 12
+Depends on: 11
+
+> Not built. The spec lists these as MVP must-haves, but they depend on Goodreads
+> write-back capability, which is the spec's called-out key risk. Selection ("accepted")
+> is already tracked; in-progress/completed states are not.
 
 #### Tasks
 
-- Smoke test full end-to-end flow (import → quiz → spin → accept)
-- Validate analytics events fire at each step
-- Validate recommendation completion flow with a real TBR
+- Decide on storage for reading status (local vs DB vs Goodreads write-back)
+- Mark a selected book as "in progress"
+- Mark a book as "completed"
+- Surface status on the home/bookshelf screen
 
 #### Done when
 
-- An internal tester can complete the full recommendation flow successfully in production
+- A user can mark a chosen book in progress and later completed
+- Status persists across sessions
+
+### 17. Server-side recommend function (decision needed)
+
+Depends on: 11
+
+> The scoring engine currently runs client-side (`quiz.service.ts`). The `recommend`
+> edge function is a stub returning `{ message: 'recommend stub' }` and is not called
+> by the frontend. Either implement scoring server-side or remove the stub.
+
+#### Tasks
+
+- Decide: keep client-side scoring, or move it behind the `recommend` edge function
+- If removing: delete the stub function and its test
+- If implementing: port scoring, validate inputs, return ranked results with logging
+
+#### Done when
+
+- No dead/stub edge function remains, or `recommend` does real work end-to-end
+
+### 13. MVP validation + analytics
+
+Depends on: 11, 16
+
+> Recommendation sessions and selections are now persisted to the `recommendations`
+> table (see task 15), which covers the North Star data. The named analytics events
+> in the spec (§19) are not yet emitted as discrete events.
+
+#### Tasks
+
+- Emit spec analytics events (session started/completed, results viewed, book selected, etc.)
+- Smoke test full end-to-end flow (import → quiz → results → select) in production
+- Validate recommendation completion with a real TBR
+
+#### Done when
+
+- An internal tester can complete the full flow in production
+- Session + selection data is queryable for the North Star metric
 
 ---
 
@@ -89,11 +94,74 @@ Depends on: 2, 12
 
 > Scoped and ready to pick up.
 
+_(nothing queued)_
+
 ---
 
 ## In Progress
 
 > Actively being worked (keep this short — ideally one item).
+
+_(nothing in flight)_
+
+---
+
+## In Review
+
+> PR open / awaiting review.
+
+### 2. Part C — infrastructure finish-up
+
+Depends on: 1
+
+> Manual steps the agent cannot perform (accounts, secrets, branch protection, first deploy).
+
+#### Tasks
+
+- [ ] Create GitHub Environments (`production` and `staging`)
+- [ ] Set `SUPABASE_PROJECT_ID` variable on each environment
+- [ ] Set `CLOUDFLARE_PAGES_PROJECT` variable on each environment
+- [ ] Set `SUPABASE_ACCESS_TOKEN` secret on each environment
+- [ ] Set `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets on each environment
+- [ ] Fill in Supabase URLs + anon keys in `frontend/src/environments/` (do not commit)
+- [ ] Create Cloudflare Pages project, set production branch to `main`
+- [ ] Enable branch protection on `main` and `development` (require PRs + CI checks)
+- [ ] Merge bootstrap PR into `development`, verify staging deploy
+- [ ] Promote `development → main` for production deploy
+- [ ] Set Supabase auth Site URL / redirect URLs per environment
+- [ ] Enable anonymous sign-ins on the hosted Supabase project (Authentication → Sign In / Providers) per environment — required for recommendation/selection tracking
+
+#### Done when
+
+- Staging deploys cleanly from `development`
+- Production deploys cleanly from `main`
+- Branch protection prevents direct pushes to both branches
+
+---
+
+## Done
+
+> Merged and verified.
+
+### 18. Add a root `.gitignore` and untrack stray files
+
+Depends on: —
+
+> Added a repo-wide root `.gitignore` (agent/editor dirs, env/secrets, OS cruft,
+> build output) alongside the existing `frontend/` and `supabase/` ones. Audited the
+> index: nothing sensitive was ever tracked (no `.env`, keys, `node_modules`, or
+> `dist`), so nothing needed removing. `.claude/` is now ignored; legitimate untracked
+> source files remain stage-able.
+
+#### Tasks
+
+- [x] Add a root `.gitignore` covering editor/agent dirs, env files, OS cruft, and build output
+- [x] Confirm nothing that should never have been committed is tracked (none found)
+- [x] Confirm no `.env`, keys, or service-account files are tracked
+
+#### Done when
+
+- [x] A root `.gitignore` is committed and `git status` is clean of stray files
 
 ### 1. Bootstrap
 
@@ -112,48 +180,92 @@ Depends on: —
 - [x] B8 GitHub Actions deploy-frontend (Cloudflare Pages)
 - [x] B9 README
 
-#### Done when
-
-- All CI workflows pass on a PR into `development`
-- Frontend builds in production mode
-- Supabase migration applies cleanly with RLS enabled
-- README covers local dev setup end-to-end
-
----
-
-## In Review
-
-> PR open / awaiting review.
-
-### 2. Part C — infrastructure finish-up
+### 10. Goodreads TBR import
 
 Depends on: 1
 
+> Built against the public Goodreads RSS feed (`/review/list_rss/{id}?shelf=to-read`),
+> not the authenticated HTML shelf. The import edge function parses the feed; the
+> frontend stores the imported books in `localStorage` (not the DB) for the MVP.
+
 #### Tasks
 
-- [ ] Create GitHub Environments (`production` and `staging`)
-- [ ] Set `SUPABASE_PROJECT_ID` variable on each environment
-- [ ] Set `CLOUDFLARE_PAGES_PROJECT` variable on each environment
-- [ ] Set `SUPABASE_ACCESS_TOKEN` secret on each environment
-- [ ] Set `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets on each environment
-- [ ] Fill in Supabase URLs + anon keys in `frontend/src/environments/` (do not commit)
-- [ ] Create Cloudflare Pages project, set production branch to `main`
-- [ ] Enable branch protection on `main` and `development` (require PRs + CI checks)
-- [ ] Merge bootstrap PR into `development`, verify staging deploy
-- [ ] Promote `development → main` for production deploy
-- [ ] Set Supabase auth Site URL / redirect URLs per environment
+- [x] Accept and normalise/validate a Goodreads profile URL
+- [x] Fetch the Want to Read shelf via the RSS feed (edge function, paginated)
+- [x] Extract title, author, cover URL, page count, rating, genres, ISBN where available
+- [x] Handle missing metadata gracefully
+- [x] 24h scrape cache (`goodreads_scrape_cache`) to avoid re-scraping
+- [x] UI: URL input + import progress + confirmation screen
+- [x] Structured logging on the edge function
 
 #### Done when
 
-- Staging deploys cleanly from `development`
-- Production deploys cleanly from `main`
-- Branch protection prevents direct pushes to both branches
+- [x] Scraper works end-to-end for a real Goodreads profile
+- [x] Missing fields handled without errors
+- [x] User can review their imported list before continuing
 
----
+### 11. Recommendation engine + quiz
 
-## Done
+Depends on: 1, 10
 
-> Merged and verified.
+> Diverged from the spec's 5-question flow: implemented as a 3-step quiz
+> (mood multi-select, commitment, avoidance). Scoring runs client-side in
+> `quiz.service.ts`. Results are deterministic per score, with a small ±1.5
+> jitter so closely-scored books vary between runs.
+
+#### Tasks
+
+- [x] 3-step quiz: mood (multi), commitment (length), avoidance (multi)
+- [x] Rules-based scoring: genre/mood match, commitment fit, avoidance filter, rating bonus
+- [x] Light randomisation so near-ties shuffle between runs
+- [x] Connect quiz answers to the engine and display the 3–5 ranked results
+
+#### Done when
+
+- [x] Engine returns ranked results from the user's TBR
+- [x] User completes the quiz and receives ≥1 recommendation
+
+### 14. Book detail modal + external synopsis
+
+Depends on: 11
+
+> Results show 3–5 cards; tapping one opens a bottom-sheet modal with synopsis,
+> genres, rating, and page count. Synopsis and genres are fetched on demand from
+> Open Library (ISBN edition → work, with a title/author search fallback) and
+> cached in-memory + `localStorage`.
+
+#### Tasks
+
+- [x] 3–5 result card list with cover, title, author, rating, page count
+- [x] Bottom-sheet detail modal (scroll lock, backdrop, Escape to close)
+- [x] On-demand synopsis + genres from Open Library with two-level cache
+- [x] Manual selection → confirmation screen
+
+#### Done when
+
+- [x] User can inspect any recommended book and confirm a selection
+
+### 15. Anonymous-user tracking of recommendations & selections
+
+Depends on: 11
+
+> Every visitor gets a persisted anonymous Supabase session. Recommendation sessions
+> and the final selection are written to the `recommendations` table under RLS
+> (`auth.uid() = user_id`). Books live in `localStorage`, so picks and the selected
+> book are stored as `jsonb` snapshots rather than via the `book_id` FK.
+
+#### Tasks
+
+- [x] Enable anonymous sign-ins (`config.toml`) and bootstrap a session on app load
+- [x] `recommendations` migration: add `picks` + `selected_book` jsonb columns
+- [x] Record the recommendation (answers + picks) on quiz completion
+- [x] Mark the accepted book on selection
+- [x] Best-effort writes — tracking never blocks or breaks the reading flow
+
+#### Done when
+
+- [x] Anon sign-in → insert → selection update verified end-to-end under RLS
+- [x] Hosted enablement tracked as a Part C step
 
 ---
 

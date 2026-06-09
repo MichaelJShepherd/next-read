@@ -63,14 +63,19 @@ export class QuizService {
 
   readonly answers = signal<QuizAnswers | null>(null);
   readonly picks = signal<ScoredBook[]>([]);
+  /** Id of the persisted recommendation row, set once tracking resolves. */
+  readonly recommendationId = signal<string | null>(null);
 
   async computePicks(answers: QuizAnswers): Promise<ScoredBook[]> {
     this.answers.set(answers);
+    this.recommendationId.set(null);
     const books = await this.booksService.getAll();
     const scored: ScoredBook[] = books
-      .map(b => ({ book: b, score: scoreBook(b, answers) }))
+      .map(b => ({ book: b, score: scoreBook(b, answers), _sort: 0 }))
+      .map(s => ({ ...s, _sort: s.score + (Math.random() - 0.5) * 3 }))
       .filter(s => s.score > -900)
-      .sort((a, b) => b.score - a.score);
+      .sort((a, b) => b._sort - a._sort)
+      .map(({ book, score }) => ({ book, score }));
     this.picks.set(scored);
     return scored;
   }

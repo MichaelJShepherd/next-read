@@ -1,10 +1,7 @@
-import { inject, Injectable } from '@angular/core';
-import { SupabaseService } from './supabase.service';
-import { AuthService } from './auth.service';
+import { Injectable } from '@angular/core';
 
 export interface Book {
   id: string;
-  user_id: string;
   title: string;
   author: string | null;
   cover_url: string | null;
@@ -12,36 +9,36 @@ export interface Book {
   avg_rating: number | null;
   genres: string[] | null;
   synopsis: string | null;
+  isbn: string | null;
 }
 
-export type NewBook = Omit<Book, 'id' | 'user_id'>;
+export type NewBook = Omit<Book, 'id'>;
+
+const STORAGE_KEY = 'nr_books';
+
+function generateId(): string {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+}
 
 @Injectable({ providedIn: 'root' })
 export class BooksService {
-  private readonly client = inject(SupabaseService).client;
-  private readonly auth = inject(AuthService);
-
-  async getAll(): Promise<Book[]> {
-    const { data, error } = await this.client
-      .from('books')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (error) throw error;
-    return (data ?? []) as Book[];
+  getAll(): Promise<Book[]> {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return Promise.resolve(raw ? (JSON.parse(raw) as Book[]) : []);
+    } catch {
+      return Promise.resolve([]);
+    }
   }
 
-  async saveMany(books: NewBook[]): Promise<void> {
-    const userId = this.auth.userId;
-    if (!userId) throw new Error('Not authenticated');
-    const rows = books.map(b => ({ ...b, user_id: userId }));
-    const { error } = await this.client.from('books').insert(rows);
-    if (error) throw error;
+  saveMany(books: NewBook[]): Promise<void> {
+    const rows: Book[] = books.map(b => ({ ...b, id: generateId() }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
+    return Promise.resolve();
   }
 
-  async clearAll(): Promise<void> {
-    const userId = this.auth.userId;
-    if (!userId) throw new Error('Not authenticated');
-    const { error } = await this.client.from('books').delete().eq('user_id', userId);
-    if (error) throw error;
+  clearAll(): Promise<void> {
+    localStorage.removeItem(STORAGE_KEY);
+    return Promise.resolve();
   }
 }

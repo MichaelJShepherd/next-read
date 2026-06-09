@@ -8,6 +8,7 @@ export interface ScrapedBook {
   page_count: number | null;
   avg_rating: number | null;
   genres: string[] | null;
+  isbn: string | null;
 }
 
 @Injectable({ providedIn: 'root' })

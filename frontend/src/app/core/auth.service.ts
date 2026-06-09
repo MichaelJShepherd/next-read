@@ -1,26 +1,49 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Session } from '@supabase/supabase-js';
 import { SupabaseService } from './supabase.service';
 
+// Anonymous-only auth. Every visitor gets a persisted anonymous Supabase
+// session so their recommendations and selections can be tracked. The session
+// is stored by supabase-js, so a returning visitor keeps the same identity.
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly client = inject(SupabaseService).client;
+  private readonly supabase = inject(SupabaseService);
 
-  readonly session = signal<Session | null>(null);
+  private readonly _userId = signal<string | null>(null);
+  readonly userId = this._userId.asReadonly();
 
-  get userId(): string | null {
-    return this.session()?.user?.id ?? null;
+  private inflight: Promise<string | null> | null = null;
+
+  /**
+   * Ensures an anonymous session exists, reusing the persisted one if present.
+   * Idempotent and concurrency-safe. Best-effort: returns null (never throws)
+   * if anonymous sign-ins are unavailable, so the app keeps working untracked.
+   */
+  ensureSession(): Promise<string | null> {
+    const current = this._userId();
+    if (current) return Promise.resolve(current);
+    if (this.inflight) return this.inflight;
+
+    this.inflight = this.resolveSession().finally(() => {
+      this.inflight = null;
+    });
+    return this.inflight;
   }
 
-  async init(): Promise<void> {
-    const { data: { session } } = await this.client.auth.getSession();
-    this.session.set(session);
+  private async resolveSession(): Promise<string | null> {
+    try {
+      const { data } = await this.supabase.client.auth.getSession();
+      if (data.session) {
+        this._userId.set(data.session.user.id);
+        return data.session.user.id;
+      }
 
-    if (!session) {
-      const { data } = await this.client.auth.signInAnonymously();
-      this.session.set(data.session);
+      const { data: signed, error } = await this.supabase.client.auth.signInAnonymously();
+      if (error || !signed.user) return null;
+
+      this._userId.set(signed.user.id);
+      return signed.user.id;
+    } catch {
+      return null;
     }
-
-    this.client.auth.onAuthStateChange((_, s) => this.session.set(s));
   }
 }

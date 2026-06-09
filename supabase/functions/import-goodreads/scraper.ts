@@ -7,77 +7,94 @@ export interface ScrapedBook {
   page_count: number | null;
   avg_rating: number | null;
   genres: string[] | null;
+  isbn: string | null;
 }
+
+const RSS_PAGE_SIZE = 100;
+const MAX_PAGES = 10; // cap at 1000 books
 
 /** Extracts the numeric Goodreads user ID from any Goodreads profile URL. */
 export function extractGoodreadsId(url: string): string | null {
-  const match = url.match(/goodreads\.com\/(?:user\/show\/|review\/list\/)(\d+)/);
+  const match = url.match(/goodreads\.com\/(?:user\/show\/|review\/list(?:_rss)?\/)(\d+)/);
   return match?.[1] ?? null;
 }
 
 /** Normalises a Goodreads URL to a canonical form for cache keying. */
 export function normaliseProfileUrl(url: string): string {
   const id = extractGoodreadsId(url);
-  return id ? `https://www.goodreads.com/review/list/${id}` : url.trim().toLowerCase();
+  return id ? `https://www.goodreads.com/review/list_rss/${id}` : url.trim().toLowerCase();
 }
 
-/** Fetches and parses the Want to Read shelf for a given Goodreads user ID. */
+/** Fetches all pages of the public RSS to-read shelf for a given Goodreads user ID. */
 export async function scrapeWantToRead(goodreadsId: string): Promise<ScrapedBook[]> {
-  const shelfUrl =
-    `https://www.goodreads.com/review/list/${goodreadsId}` +
-    `?shelf=to-read&view=table&per_page=200&sort=date_added`;
+  const all: ScrapedBook[] = [];
 
-  const res = await fetch(shelfUrl, {
-    headers: {
-      'User-Agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
-        '(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-      Accept: 'text/html,application/xhtml+xml',
-      'Accept-Language': 'en-US,en;q=0.9',
-    },
-  });
+  for (let page = 1; page <= MAX_PAGES; page++) {
+    const url =
+      `https://www.goodreads.com/review/list_rss/${goodreadsId}` +
+      `?shelf=to-read&page=${page}`;
 
-  if (res.status === 404) throw new Error('Goodreads profile not found or is private.');
-  if (!res.ok) throw new Error(`Goodreads returned ${res.status}. Try again later.`);
+    const res = await fetch(url, {
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
+          '(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        Accept: 'application/rss+xml, text/xml',
+      },
+    });
 
-  const html = await res.text();
-  return parseShelfHtml(html);
+    if (res.status === 404) throw new Error('Goodreads profile not found or is private.');
+    if (!res.ok) throw new Error(`Goodreads returned ${res.status}. Try again later.`);
+
+    const xml = await res.text();
+    const items = parseRssXml(xml);
+    all.push(...items);
+
+    if (items.length < RSS_PAGE_SIZE) break;
+
+    // Be polite between pages
+    await new Promise<void>(resolve => setTimeout(resolve, 300));
+  }
+
+  return all;
 }
 
-/** Pure HTML parser — no network calls, safe to unit test. */
-export function parseShelfHtml(html: string): ScrapedBook[] {
-  const root = parse(html);
+function stripCdata(s: string): string {
+  return s.replace(/^<!\[CDATA\[/, '').replace(/\]\]>$/, '').trim();
+}
+
+function text(item: ReturnType<typeof parse>, selector: string): string {
+  return stripCdata(item.querySelector(selector)?.text?.trim() ?? '');
+}
+
+/** Pure RSS parser — no network calls, safe to unit test. */
+export function parseRssXml(xml: string): ScrapedBook[] {
+  const root = parse(xml);
+  const items = root.querySelectorAll('item');
   const books: ScrapedBook[] = [];
 
-  for (const row of root.querySelectorAll('tr.bookalike')) {
-    const titleEl = row.querySelector('td.field.title a');
-    if (!titleEl) continue;
-
-    const title = titleEl.text.trim().replace(/\s+/g, ' ');
+  for (const item of items) {
+    const title = text(item, 'title');
     if (!title) continue;
 
-    const authorEl =
-      row.querySelector('td.field.author .authorName') ??
-      row.querySelector('td.field.author a');
+    const author = text(item, 'author_name') || null;
 
-    const coverEl = row.querySelector('td.field.cover img');
-    const src = coverEl?.getAttribute('src') ?? null;
-    const cover_url = src ? src.replace(/\._[A-Z0-9]+_\./, '.') : null; // strip resize tokens
+    const rawCover =
+      text(item, 'book_large_image_url') ||
+      text(item, 'book_small_image_url') ||
+      null;
+    const cover_url = rawCover?.includes('nophoto') ? null : rawCover ?? null;
 
-    const pagesRaw = row.querySelector('td.field.num_pages .value')?.text?.trim() ?? '';
-    const page_count = pagesRaw ? parseInt(pagesRaw.replace(/,/g, ''), 10) || null : null;
+    const avgStr = text(item, 'average_rating');
+    const avg_rating = avgStr ? parseFloat(avgStr) || null : null;
 
-    const ratingRaw = row.querySelector('td.field.avg_rating .value')?.text?.trim() ?? '';
-    const avg_rating = ratingRaw ? parseFloat(ratingRaw) || null : null;
+    const pagesStr = text(item, 'num_pages');
+    const page_count = pagesStr ? parseInt(pagesStr, 10) || null : null;
 
-    books.push({
-      title,
-      author: authorEl?.text?.trim().replace(/\s+/g, ' ') ?? null,
-      cover_url,
-      page_count,
-      avg_rating,
-      genres: null,
-    });
+    const isbnRaw = text(item, 'isbn').replace(/[^0-9X]/gi, '');
+    const isbn = isbnRaw.length >= 10 ? isbnRaw : null;
+
+    books.push({ title, author, cover_url, page_count, avg_rating, genres: null, isbn });
   }
 
   return books;

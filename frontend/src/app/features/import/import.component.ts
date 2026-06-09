@@ -48,6 +48,7 @@ export class ImportComponent {
         avg_rating: b.avg_rating,
         genres: b.genres,
         synopsis: null,
+        isbn: b.isbn,
       }));
       await this.booksService.saveMany(newBooks);
       this.router.navigate(['/quiz']);

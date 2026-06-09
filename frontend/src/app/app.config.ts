@@ -7,6 +7,11 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideAppInitializer(() => inject(AuthService).init()),
+    // Kick off the anonymous session early. Fire-and-forget so a slow or
+    // unreachable auth endpoint never blocks app startup; ensureSession() is
+    // idempotent, so callers that need the id can still await it later.
+    provideAppInitializer(() => {
+      void inject(AuthService).ensureSession();
+    }),
   ],
 };

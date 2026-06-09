@@ -8,6 +8,29 @@ The core problem is decision paralysis. Users with large to-read lists often spe
 
 The app is not intended to replace Goodreads. It is designed to make Goodreads more useful by helping users make reading decisions faster and with more confidence.
 
+## 1a. Implementation Status (as built)
+
+> This section records what is **actually implemented** today versus the product vision
+> described in the rest of this document. Where the two disagree on behaviour, this
+> section reflects reality; delivery tracking lives in `TODO.md`.
+
+**Shipped end-to-end (import → quiz → results → select):**
+
+- **Goodreads import** via the public RSS feed (`/review/list_rss/{id}?shelf=to-read`), parsed by the `import-goodreads` edge function with a 24h scrape cache. Imported books are stored in the browser's `localStorage`, not the database.
+- **Mood quiz** — a **3-step** flow (mood, commitment, avoidance), not the 5-question flow in §9. See §9 for the as-built questions.
+- **Rules-based scoring** running **client-side** (`quiz.service.ts`): genre/mood match, commitment-length fit, avoidance filter, and a high-rating bonus. Results are deterministic per score with a small ±1.5 jitter so near-ties vary between runs.
+- **3–5 results** as a card list; tapping a card opens a detail modal with cover, title, author, rating, page count, genres, and synopsis. Synopsis + genres are fetched on demand from **Open Library** and cached.
+- **Manual selection** → confirmation screen. This satisfies the core outcome ("select a book to read next").
+- **Anonymous tracking** — every visitor gets a persisted anonymous Supabase session. The recommendation (answers + the books shown) and the final selection are written to the `recommendations` table under RLS.
+
+**Not yet built / deferred:**
+
+- **Roulette / spinner selection** (§6, §8 step 6, §11). Manual selection covers the outcome; the spinner is additive and deferred.
+- **Mark as in progress / completed** (§6, §8 steps 8–9, §12). Depends on Goodreads write-back, the spec's key risk (§7).
+- **Discrete analytics events** (§19). Sessions and selections are persisted to the `recommendations` table, but the named events are not emitted yet.
+- **Account-based identity** (email/display name). Auth is anonymous-only; there is no email sign-in.
+- **Server-side recommendation** — the `recommend` edge function is a stub and is not called; scoring is client-side.
+
 ## 2. Product Positioning
 
 ### Product Promise
@@ -171,7 +194,55 @@ The user can later mark the book as completed.
 
 ## 9. Recommendation Flow Questions
 
-### Question 1: Reading Energy
+> **As built:** the quiz shipped as a **3-step** flow, not the 5 questions originally
+> drafted below. Mood and genre direction were merged into a single multi-select mood
+> step, and the separate "reading energy" question was dropped in favour of the
+> commitment/length step. The original 5-question design is preserved afterwards as
+> the future direction.
+
+### As built — Step 1: Mood (multi-select)
+
+“What kind of mood are you after?” — pick one or more:
+
+- Adventurous
+- Cozy
+- Emotional
+- Thrilling
+- Funny
+- Inspiring
+
+Each mood maps to a set of genres used by the scoring engine.
+
+### As built — Step 2: Commitment (single-select)
+
+“How much of a commitment feels right?”
+
+- A quick read (under 300 pages)
+- Something substantial (300–500 pages)
+- Sink into an epic (500+ pages)
+- I'm not fussed (any length)
+
+### As built — Step 3: Avoidance (multi-select)
+
+“What are you not in the mood for?” — pick any to exclude:
+
+- Horror
+- Romance
+- Sci-fi
+- Fantasy
+- Non-fiction
+- Self-help
+
+A book matching any avoided tag is filtered out of the results.
+
+---
+
+### Future direction — original 5-question design
+
+The fuller flow below is retained as a target for a richer quiz. It is **not** what
+currently ships.
+
+#### Question 1: Reading Energy
 
 “What kind of reading energy do you have?”
 
@@ -182,7 +253,7 @@ Options:
 - Fully immersive
 - Surprise me
 
-### Question 2: Mood
+#### Question 2: Mood
 
 “What kind of mood are you after?”
 
@@ -197,7 +268,7 @@ Options:
 - Thought-provoking
 - Escapist
 
-### Question 3: Commitment Level
+#### Question 3: Commitment Level
 
 “How much of a commitment feels right?”
 
@@ -208,7 +279,7 @@ Options:
 - Long and immersive
 - I’m open
 
-### Question 4: Genre Direction
+#### Question 4: Genre Direction
 
 “What sounds good right now?”
 
@@ -224,7 +295,7 @@ Options:
 - Non-fiction
 - Surprise me
 
-### Question 5: Avoidance Filter
+#### Question 5: Avoidance Filter
 
 “What are you not in the mood for?”
 
@@ -268,6 +339,12 @@ The app first narrows the TBR using the quiz flow, then spins between the 3–5 
 
 ## 13. Data Model
 
+> **As built:** identity is anonymous-only (no email/display name collected). The
+> books table exists in the schema but the MVP stores the imported TBR in the
+> browser's `localStorage`; only recommendation sessions and selections are persisted
+> server-side. The conceptual model below is the target; the "As built" notes record
+> what each entity looks like today.
+
 ### User
 
 - id
@@ -275,6 +352,10 @@ The app first narrows the TBR using the quiz flow, then spins between the 3–5 
 - display_name
 - created_at
 - last_login_at
+
+> **As built — `profiles`:** `id` (FK to `auth.users`, anonymous), `display_name`,
+> `created_at`, `updated_at`. A row is created automatically on (anonymous) sign-up via
+> the `handle_new_user` trigger. No email is collected.
 
 ### Book
 
@@ -291,6 +372,11 @@ The app first narrows the TBR using the quiz flow, then spins between the 3–5 
 - series_number
 - goodreads_url
 
+> **As built:** a `books` table exists (RLS-enabled, owner-scoped) but is currently
+> unused by the app. Imported books live in `localStorage` with: `id` (client-generated),
+> `title`, `author`, `cover_url`, `page_count`, `avg_rating`, `genres`, `synopsis`, `isbn`.
+> Synopsis and genres are fetched lazily from Open Library, not at import time.
+
 ### RecommendationSession
 
 - id
@@ -300,6 +386,12 @@ The app first narrows the TBR using the quiz flow, then spins between the 3–5 
 - resulted_in_selection
 - selected_book_id
 - filters
+
+> **As built — `recommendations`:** `id`, `user_id` (FK to `profiles`), `quiz_answers`
+> (jsonb), `picks` (jsonb snapshot of the books shown), `accepted` (boolean),
+> `selected_book` (jsonb snapshot of the chosen book), `book_id` (nullable FK, unused
+> while books are client-side), `created_at`, `updated_at`. RLS restricts every row to
+> its owner (`auth.uid() = user_id`).
 
 ## 14. Core Screens
 

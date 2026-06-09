@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
-import { QuizService, Mood, Commitment } from './quiz.service';
+import { QuizService, Mood, Commitment, QuizAnswers } from './quiz.service';
+import { RecommendationsService } from './recommendations.service';
 
 type Step = 'mood' | 'commitment' | 'avoid';
 
@@ -35,6 +36,7 @@ const AVOID_OPTIONS: { id: string; label: string }[] = [
 })
 export class QuizComponent {
   private readonly quiz = inject(QuizService);
+  private readonly recommendations = inject(RecommendationsService);
   private readonly router = inject(Router);
 
   protected readonly moods = MOODS;
@@ -81,11 +83,17 @@ export class QuizComponent {
     this.loading.set(true);
     this.errorMsg.set('');
     try {
-      await this.quiz.computePicks({
+      const answers: QuizAnswers = {
         moods: Array.from(this.selectedMoods()),
         commitment: this.selectedCommitment()!,
         avoid: Array.from(this.selectedAvoid()),
-      });
+      };
+      const scored = await this.quiz.computePicks(answers);
+      // Track the recommendation without blocking navigation; the id lands
+      // in shared state for the result screen to attach a selection to.
+      this.recommendations
+        .record(answers, scored)
+        .then(id => this.quiz.recommendationId.set(id));
       this.router.navigate(['/result']);
     } catch {
       this.errorMsg.set('Could not load your books. Please try again.');

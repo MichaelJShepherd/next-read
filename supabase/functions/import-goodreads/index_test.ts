@@ -1,5 +1,5 @@
 import { assertEquals, assertStringIncludes } from 'std/assert/mod.ts';
-import { extractGoodreadsId, normaliseProfileUrl, parseShelfHtml } from './scraper.ts';
+import { extractGoodreadsId, normaliseProfileUrl, parseRssXml } from './scraper.ts';
 
 Deno.test('extractGoodreadsId — user/show URL', () => {
   assertEquals(
@@ -22,32 +22,33 @@ Deno.test('extractGoodreadsId — invalid URL returns null', () => {
 Deno.test('normaliseProfileUrl', () => {
   assertEquals(
     normaliseProfileUrl('https://www.goodreads.com/user/show/12345-john'),
-    'https://www.goodreads.com/review/list/12345',
+    'https://www.goodreads.com/review/list_rss/12345',
   );
 });
 
-Deno.test('parseShelfHtml — returns empty array for empty HTML', () => {
-  assertEquals(parseShelfHtml('<html></html>'), []);
+Deno.test('parseRssXml — returns empty array for empty feed', () => {
+  assertEquals(parseRssXml('<rss><channel></channel></rss>'), []);
 });
 
-Deno.test('parseShelfHtml — parses book rows', () => {
-  const html = `
-    <table>
-      <tr class="bookalike">
-        <td class="field title"><a href="/book/show/1">The Night Circus</a></td>
-        <td class="field author"><a class="authorName" href="/author/show/1">Erin Morgenstern</a></td>
-        <td class="field cover"><img src="https://covers.gr/book/1._SX98_.jpg" /></td>
-        <td class="field num_pages"><div class="value">387</div></td>
-        <td class="field avg_rating"><div class="value">4.03</div></td>
-      </tr>
-    </table>
-  `;
-  const books = parseShelfHtml(html);
+Deno.test('parseRssXml — parses items', () => {
+  const xml = `<?xml version="1.0"?>
+<rss version="2.0">
+  <channel>
+    <item>
+      <title><![CDATA[The Night Circus]]></title>
+      <author_name>Erin Morgenstern</author_name>
+      <book_large_image_url><![CDATA[https://covers.gr/book/1.jpg]]></book_large_image_url>
+      <average_rating>4.03</average_rating>
+      <num_pages>387</num_pages>
+    </item>
+  </channel>
+</rss>`;
+  const books = parseRssXml(xml);
   assertEquals(books.length, 1);
   assertEquals(books[0].title, 'The Night Circus');
   assertEquals(books[0].author, 'Erin Morgenstern');
-  assertEquals(books[0].page_count, 387);
   assertEquals(books[0].avg_rating, 4.03);
+  assertEquals(books[0].page_count, 387);
 });
 
 Deno.test('handler — OPTIONS returns 200', async () => {

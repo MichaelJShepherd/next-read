@@ -1,76 +1,92 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, HostListener } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { Router } from '@angular/router';
-import { QuizService, ScoredBook } from '../quiz/quiz.service';
+import { QuizService } from '../quiz/quiz.service';
+import { RecommendationsService } from '../quiz/recommendations.service';
 import { Book } from '../../core/books.service';
-import { SupabaseService } from '../../core/supabase.service';
-import { AuthService } from '../../core/auth.service';
+import { SynopsisService, BookDetails } from '../../core/synopsis.service';
 
-type Phase = 'spinning' | 'reveal';
+const MAX_PICKS = 5;
 
 @Component({
   selector: 'app-result',
   templateUrl: './result.component.html',
 })
-export class ResultComponent implements OnInit {
+export class ResultComponent implements OnInit, OnDestroy {
   private readonly quiz = inject(QuizService);
+  private readonly recommendations = inject(RecommendationsService);
   private readonly router = inject(Router);
-  private readonly supabase = inject(SupabaseService);
-  private readonly auth = inject(AuthService);
+  private readonly doc = inject(DOCUMENT);
+  private readonly synopsisService = inject(SynopsisService);
 
-  private remainingPicks: ScoredBook[] = [];
-  protected readonly phase = signal<Phase>('spinning');
-  protected readonly currentBook = signal<Book | null>(null);
-  protected readonly accepted = signal(false);
-  protected readonly spinIndex = signal(0);
-  protected readonly allPreviews = signal<Book[]>([]);
+  protected readonly picks = signal<Book[]>([]);
+  protected readonly selectedBook = signal<Book | null>(null);
+  protected readonly acceptedBook = signal<Book | null>(null);
 
-  protected readonly hasMore = computed(() => this.remainingPicks.length > 1);
+  protected readonly detailsLoading = signal(false);
+  protected readonly details = signal<BookDetails>({ synopsis: null, genres: null });
 
   ngOnInit(): void {
-    const picks = this.quiz.picks();
-    if (!picks.length) {
+    const scored = this.quiz.picks();
+    if (!scored.length) {
       this.router.navigate(['/']);
       return;
     }
-    this.remainingPicks = [...picks];
-    this.allPreviews.set(picks.map(p => p.book));
-    this.startSpin();
+    this.picks.set(scored.slice(0, MAX_PICKS).map(p => p.book));
   }
 
-  private startSpin(): void {
-    this.phase.set('spinning');
-    const duration = 2200;
-    const interval = setInterval(() => {
-      this.spinIndex.update(i => (i + 1) % this.allPreviews().length);
-    }, 100);
-    setTimeout(() => {
-      clearInterval(interval);
-      const winner = this.remainingPicks[0].book;
-      this.currentBook.set(winner);
-      this.phase.set('reveal');
-    }, duration);
+  ngOnDestroy(): void {
+    this.unlockScroll();
   }
 
-  protected respin(): void {
-    if (this.remainingPicks.length > 1) {
-      this.remainingPicks = this.remainingPicks.slice(1);
+  @HostListener('document:keydown.escape')
+  protected onEscape(): void {
+    if (this.selectedBook()) this.closeModal();
+  }
+
+  protected openModal(book: Book): void {
+    this.selectedBook.set(book);
+    this.details.set({ synopsis: null, genres: null });
+    this.doc.body.style.overflow = 'hidden';
+    this.loadDetails(book);
+  }
+
+  private async loadDetails(book: Book): Promise<void> {
+    this.detailsLoading.set(true);
+    try {
+      const result = await this.synopsisService.fetchDetails(book.isbn, book.title, book.author);
+      // Only apply if this book's modal is still open
+      if (this.selectedBook()?.id === book.id) {
+        this.details.set(result);
+      }
+    } finally {
+      if (this.selectedBook()?.id === book.id) {
+        this.detailsLoading.set(false);
+      }
     }
-    this.accepted.set(false);
-    this.startSpin();
   }
 
-  protected async accept(): Promise<void> {
-    const book = this.currentBook();
-    if (!book) return;
-    const userId = this.auth.userId;
-    if (userId) {
-      await this.supabase.client.from('recommendations').upsert({
-        user_id: userId,
-        book_id: book.id,
-        score: this.remainingPicks[0]?.score ?? 0,
-      });
+  protected closeModal(): void {
+    this.selectedBook.set(null);
+    this.unlockScroll();
+  }
+
+  protected accept(): void {
+    const book = this.selectedBook();
+    this.acceptedBook.set(book);
+
+    const id = this.quiz.recommendationId();
+    if (book && id) {
+      // Best-effort selection tracking; never blocks the confirmation UI.
+      void this.recommendations.markSelected(id, book);
     }
-    this.accepted.set(true);
+
+    this.closeModal();
+  }
+
+  protected starsOf(rating: number): string {
+    const filled = Math.round(rating);
+    return '★'.repeat(filled) + '☆'.repeat(Math.max(0, 5 - filled));
   }
 
   protected restart(): void {
@@ -79,5 +95,9 @@ export class ResultComponent implements OnInit {
 
   protected goHome(): void {
     this.router.navigate(['/']);
+  }
+
+  private unlockScroll(): void {
+    this.doc.body.style.overflow = '';
   }
 }

@@ -4,7 +4,7 @@
 
 Next Read is a cozy personal librarian for Goodreads TBR lists. It guides readers through a mood-based recommendation flow to overcome decision paralysis.
 
-**Core principles:** Inspect before changing. Make small, safe, incremental changes. Match existing style. No commented-out code, debug logs, or unexplained TODOs. Never weaken correctness to silence type/lint/test errors.
+**Core principles:** Inspect before changing. Make small, safe, incremental changes. Match existing style. No commented-out code, ad-hoc debug logs, or unexplained TODOs. Never weaken correctness to silence type/lint/test errors.
 
 ## Stack
 
@@ -76,6 +76,15 @@ Validate every external boundary before business logic runs: HTTP bodies, query/
 - Validate route params. Handle loading / empty / error / success states explicitly.
 - Share validation schemas with the backend where possible.
 - Accessibility: semantic elements, labels, focus management, colour contrast.
+
+## Logging
+
+- Every edge function **must** log key lifecycle events using `log()` from `supabase/functions/_shared/logger.ts`. Never use raw `console.log` in edge functions.
+- Log events: request validation failures, cache hit/miss/stale, external call start + result, errors.
+- Always include `fn` (function name) and `event` in every entry. Output is JSON so Supabase can filter by field.
+- Levels: `info` for normal flow, `warn` for expected failures (bad input, empty result), `error` for unexpected failures (scrape crash, DB error).
+- **Never log secrets, tokens, full request bodies, or PII** (user IDs are acceptable; profile URLs are public).
+- Frontend: no `console.log` in committed code.
 
 ## Error handling
 
