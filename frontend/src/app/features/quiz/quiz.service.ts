@@ -13,6 +13,8 @@ export interface QuizAnswers {
 export interface ScoredBook {
   book: Book;
   score: number;
+  /** Human-readable reasons this book was recommended, in scoring order. */
+  reasons: string[];
 }
 
 const MOOD_GENRES: Record<Mood, string[]> = {
@@ -31,30 +33,51 @@ const PAGE_RANGES: Record<Commitment, [number, number] | null> = {
   any: null,
 };
 
-function scoreBook(book: Book, answers: QuizAnswers): number {
-  const genres = (book.genres ?? []).map(g => g.toLowerCase());
+const COMMITMENT_REASONS: Record<Commitment, string | null> = {
+  short: 'A quick read, like you asked for',
+  medium: 'A substantial read, like you asked for',
+  long: 'An epic, like you asked for',
+  any: null,
+};
+
+function scoreBook(book: Book, answers: QuizAnswers): { score: number; reasons: string[] } {
+  const genres = (book.genres ?? []).map((g) => g.toLowerCase());
   let score = 0;
+  const reasons: string[] = [];
 
   for (const mood of answers.moods) {
     const related = MOOD_GENRES[mood];
+    let matched = false;
     for (const g of genres) {
-      if (related.some(r => g.includes(r) || r.includes(g))) score += 2;
+      if (related.some((r) => g.includes(r) || r.includes(g))) {
+        score += 2;
+        matched = true;
+      }
     }
+    if (matched) reasons.push(`Matches your ${mood} mood`);
   }
 
   const range = PAGE_RANGES[answers.commitment];
   if (range && book.page_count !== null) {
-    if (book.page_count >= range[0] && book.page_count <= range[1]) score += 3;
-    else score -= 2;
+    if (book.page_count >= range[0] && book.page_count <= range[1]) {
+      score += 3;
+      const reason = COMMITMENT_REASONS[answers.commitment];
+      if (reason) reasons.push(reason);
+    } else {
+      score -= 2;
+    }
   }
 
   for (const tag of answers.avoid) {
-    if (genres.some(g => g.includes(tag.toLowerCase()))) score -= 999;
+    if (genres.some((g) => g.includes(tag.toLowerCase()))) score -= 999;
   }
 
-  if ((book.avg_rating ?? 0) >= 4.0) score += 1;
+  if ((book.avg_rating ?? 0) >= 4.0) {
+    score += 1;
+    reasons.push('Loved by readers');
+  }
 
-  return score;
+  return { score, reasons };
 }
 
 @Injectable({ providedIn: 'root' })
@@ -71,11 +94,11 @@ export class QuizService {
     this.recommendationId.set(null);
     const books = await this.booksService.getAll();
     const scored: ScoredBook[] = books
-      .map(b => ({ book: b, score: scoreBook(b, answers), _sort: 0 }))
-      .map(s => ({ ...s, _sort: s.score + (Math.random() - 0.5) * 3 }))
-      .filter(s => s.score > -900)
+      .map((b) => ({ book: b, ...scoreBook(b, answers), _sort: 0 }))
+      .map((s) => ({ ...s, _sort: s.score + (Math.random() - 0.5) * 3 }))
+      .filter((s) => s.score > -900)
       .sort((a, b) => b._sort - a._sort)
-      .map(({ book, score }) => ({ book, score }));
+      .map(({ book, score, reasons }) => ({ book, score, reasons }));
     this.picks.set(scored);
     return scored;
   }

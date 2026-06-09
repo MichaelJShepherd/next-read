@@ -143,6 +143,29 @@ Depends on: 1
 
 > Merged and verified.
 
+### 19. Quiz flow improvements
+
+Depends on: 11
+
+> Hardened and polished the quiz flow. Adds the spec's MVP "basic recommendation
+> explanation": scoring now produces human-readable reasons per pick, shown as a
+> "Why this pick" section in the result detail modal.
+
+#### Tasks
+
+- [x] Empty-shelf guard: `/quiz` shows an import prompt instead of a pointless quiz when no books are imported
+- [x] No-match handling: stay on the quiz with a friendly notice instead of silently bouncing home
+- [x] Restore previous answers so "Try different answers" refines instead of resetting
+- [x] "Why this pick" reasons (mood match, length fit, high rating) surfaced in the result modal
+- [x] Accessibility: screen-reader step announcements, arrow-key support + roving tabindex on the commitment radio group, 44px chip tap targets, mood emoji rendered
+- [x] Code quality: removed non-null `!`, caught the floating tracking promise, aligned avoid chips with the brand-kit selected-chip style
+- [x] Unit tests for the scoring engine (`quiz.service.spec.ts`)
+
+#### Done when
+
+- [x] A user with an empty shelf or over-strict filters is told what to do next instead of hitting a dead end
+- [x] Each recommended book explains why it was picked
+
 ### 18. Add a root `.gitignore` and untrack stray files
 
 Depends on: —

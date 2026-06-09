@@ -23,6 +23,8 @@ export class ResultComponent implements OnInit, OnDestroy {
   protected readonly selectedBook = signal<Book | null>(null);
   protected readonly acceptedBook = signal<Book | null>(null);
 
+  private reasonsByBookId = new Map<string, string[]>();
+
   protected readonly detailsLoading = signal(false);
   protected readonly details = signal<BookDetails>({ synopsis: null, genres: null });
 
@@ -32,7 +34,13 @@ export class ResultComponent implements OnInit, OnDestroy {
       this.router.navigate(['/']);
       return;
     }
-    this.picks.set(scored.slice(0, MAX_PICKS).map(p => p.book));
+    const top = scored.slice(0, MAX_PICKS);
+    this.picks.set(top.map((p) => p.book));
+    this.reasonsByBookId = new Map(top.map((p) => [p.book.id, p.reasons]));
+  }
+
+  protected reasonsFor(book: Book): string[] {
+    return this.reasonsByBookId.get(book.id) ?? [];
   }
 
   ngOnDestroy(): void {
