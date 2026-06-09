@@ -72,6 +72,63 @@
           </p>
         </div>
 
+        <!-- Roulette spinner -->
+        @if (picks().length > 1) {
+          <div class="flex flex-col gap-3">
+            @if (!spunBook()) {
+              <button
+                type="button"
+                (click)="spin()"
+                [disabled]="spinning()"
+                class="h-12 w-full rounded-[var(--radius-md)] border-[1.5px] border-[var(--color-green-500)] text-[var(--color-green-700)] text-sm font-medium transition-colors duration-150 hover:bg-[var(--color-green-50)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)] disabled:cursor-default disabled:opacity-60"
+              >
+                {{ spinning() ? 'Spinning…' : "Can't decide? Spin for me 🎲" }}
+              </button>
+            }
+            <div aria-live="polite">
+              @if (spunBook() && !spinning()) {
+                <div
+                  class="book-reveal flex flex-col gap-3 rounded-[var(--radius-lg)] border border-[var(--color-green-200)] bg-[var(--color-green-50)] p-4"
+                >
+                  <div class="text-center">
+                    <p
+                      class="text-xs font-medium tracking-[0.1em] uppercase text-[var(--color-green-700)]"
+                    >
+                      The spinner chose
+                    </p>
+                    <p
+                      class="mt-1 font-display text-lg text-[var(--color-neutral-800)] leading-snug"
+                    >
+                      {{ spunBook()!.title }}
+                    </p>
+                    @if (spunBook()!.author) {
+                      <p class="mt-0.5 text-xs text-[var(--color-neutral-500)]">
+                        {{ spunBook()!.author }}
+                      </p>
+                    }
+                  </div>
+                  <div class="flex gap-3">
+                    <button
+                      type="button"
+                      (click)="acceptSpun()"
+                      class="h-12 flex-1 rounded-[var(--radius-md)] bg-[var(--color-green-500)] text-white text-sm font-medium transition-colors duration-150 hover:bg-[var(--color-green-600)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]"
+                    >
+                      This is the one!
+                    </button>
+                    <button
+                      type="button"
+                      (click)="spin()"
+                      class="h-12 flex-1 rounded-[var(--radius-md)] border-[1.5px] border-[var(--color-green-500)] text-[var(--color-green-700)] text-sm font-medium transition-colors duration-150 hover:bg-[var(--color-green-100)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]"
+                    >
+                      Spin again
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
         <!-- Book card list -->
         <ul class="flex flex-col gap-3" aria-label="Recommended books">
           @for (book of picks(); track book.id; let i = $index) {
@@ -79,7 +136,14 @@
               <button
                 type="button"
                 (click)="openModal(book)"
-                class="w-full flex items-center gap-4 rounded-[var(--radius-lg)] bg-[var(--color-neutral-50)] border border-[var(--color-neutral-200)] px-4 py-3 text-left transition-all duration-150 hover:border-[var(--color-green-300)] hover:bg-[var(--color-green-50)] hover:shadow-[var(--shadow-md)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]"
+                [disabled]="spinning()"
+                class="w-full flex items-center gap-4 rounded-[var(--radius-lg)] border px-4 py-3 text-left transition-all duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-green-500)]"
+                [class]="
+                  highlightIndex() === i
+                    ? 'border-[var(--color-green-500)] bg-[var(--color-green-50)] shadow-[var(--shadow-md)]'
+                    : 'border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] hover:border-[var(--color-green-300)] hover:bg-[var(--color-green-50)] hover:shadow-[var(--shadow-md)]'
+                "
+                [class.book-spin]="spinning() && highlightIndex() === i"
                 [attr.aria-label]="book.title + ' — tap to view details'"
               >
                 <!-- Cover -->

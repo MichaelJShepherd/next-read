@@ -10,27 +10,6 @@
 
 > Known future work, not yet planned.
 
-### 12. Roulette / spinner selection
-
-Depends on: 11
-
-> Deferred. Manual selection (tap a book → detail modal → confirm) is implemented and
-> covers the "select a book" outcome. The spec's roulette spinner is an optional,
-> additive way to pick between the 3–5 results and has not been built. A `book-spin`
-> CSS keyframe exists in `styles.css` but is currently unused.
-
-#### Tasks
-
-- Implement roulette spinner component (2–4s decelerate easing) over the 3–5 results
-- Respect `prefers-reduced-motion` (instant reveal fallback)
-- Allow respin and accept
-- Wire to the existing result reveal
-
-#### Done when
-
-- Spinner resolves to a single book with correct motion behaviour
-- Respin and accept work on mobile
-
 ### 16. Book status: mark in progress / completed
 
 Depends on: 11
@@ -142,6 +121,29 @@ Depends on: 1
 ## Done
 
 > Merged and verified.
+
+### 12. Roulette / spinner selection
+
+Depends on: 11
+
+> Implemented as an optional "Spin for me" control on the results page rather than a
+> separate spinner screen. The highlight travels across the existing result cards with
+> decelerating steps (~2–3s, within the brand's 2–4s spinner window, via
+> `spin-plan.ts`), lands on a random pick, and reuses the unused `book-spin` pulse.
+> Manual selection remains the primary path.
+
+#### Tasks
+
+- [x] Roulette spin over the 3–5 results (2–4s decelerating step sequence)
+- [x] Respect `prefers-reduced-motion` (instant reveal fallback)
+- [x] Respin and accept from the spin result panel
+- [x] Wired to the existing result reveal and accept/confirmation flow
+- [x] Unit tests for the spin schedule (`spin-plan.spec.ts`)
+
+#### Done when
+
+- [x] Spinner resolves to a single book with correct motion behaviour
+- [x] Respin and accept work on mobile
 
 ### 19. Quiz flow improvements
 

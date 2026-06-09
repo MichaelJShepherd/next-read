@@ -5,6 +5,7 @@ import { QuizService } from '../quiz/quiz.service';
 import { RecommendationsService } from '../quiz/recommendations.service';
 import { Book } from '../../core/books.service';
 import { SynopsisService, BookDetails } from '../../core/synopsis.service';
+import { buildSpinPlan, SpinStep } from './spin-plan';
 
 const MAX_PICKS = 5;
 
@@ -28,6 +29,11 @@ export class ResultComponent implements OnInit, OnDestroy {
   protected readonly detailsLoading = signal(false);
   protected readonly details = signal<BookDetails>({ synopsis: null, genres: null });
 
+  protected readonly spinning = signal(false);
+  protected readonly highlightIndex = signal<number | null>(null);
+  protected readonly spunBook = signal<Book | null>(null);
+  private spinTimer: ReturnType<typeof setTimeout> | null = null;
+
   ngOnInit(): void {
     const scored = this.quiz.picks();
     if (!scored.length) {
@@ -44,6 +50,7 @@ export class ResultComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.spinTimer !== null) clearTimeout(this.spinTimer);
     this.unlockScroll();
   }
 
@@ -81,15 +88,59 @@ export class ResultComponent implements OnInit, OnDestroy {
 
   protected accept(): void {
     const book = this.selectedBook();
+    if (book) this.acceptBook(book);
+    this.closeModal();
+  }
+
+  /** Lets the roulette spinner randomly land on one of the picks. */
+  protected spin(): void {
+    const books = this.picks();
+    if (this.spinning() || books.length < 2) return;
+
+    this.spunBook.set(null);
+    const target = Math.floor(Math.random() * books.length);
+
+    // Reduced motion: skip the roulette and reveal the result instantly.
+    if (this.prefersReducedMotion()) {
+      this.highlightIndex.set(target);
+      this.spunBook.set(books[target]);
+      return;
+    }
+
+    this.spinning.set(true);
+    const plan = buildSpinPlan(books.length, target, this.highlightIndex() ?? 0);
+    this.runSpinSteps(plan, 0, target);
+  }
+
+  private runSpinSteps(plan: SpinStep[], step: number, target: number): void {
+    if (step >= plan.length) {
+      this.spinning.set(false);
+      this.spunBook.set(this.picks()[target] ?? null);
+      return;
+    }
+    this.spinTimer = setTimeout(() => {
+      this.highlightIndex.set(plan[step].index);
+      this.runSpinSteps(plan, step + 1, target);
+    }, plan[step].delay);
+  }
+
+  protected acceptSpun(): void {
+    const book = this.spunBook();
+    if (book) this.acceptBook(book);
+  }
+
+  private acceptBook(book: Book): void {
     this.acceptedBook.set(book);
 
     const id = this.quiz.recommendationId();
-    if (book && id) {
+    if (id) {
       // Best-effort selection tracking; never blocks the confirmation UI.
       void this.recommendations.markSelected(id, book);
     }
+  }
 
-    this.closeModal();
+  private prefersReducedMotion(): boolean {
+    return this.doc.defaultView?.matchMedia('(prefers-reduced-motion: reduce)').matches ?? false;
   }
 
   protected starsOf(rating: number): string {
