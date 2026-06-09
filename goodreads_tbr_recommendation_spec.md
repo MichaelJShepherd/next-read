@@ -22,11 +22,11 @@ The app is not intended to replace Goodreads. It is designed to make Goodreads m
 - **3–5 results** as a card list; tapping a card opens a detail modal with cover, title, author, rating, page count, genres, synopsis, and a "Why this pick" explanation derived from the scoring reasons (mood match, length fit, high rating). Synopsis + genres are fetched on demand from **Open Library** and cached.
 - **Quiz guard rails** — the quiz shows an import prompt when the bookshelf is empty, keeps the user on the quiz with a friendly notice when no books match their filters, and restores previous answers when retrying ("Try different answers").
 - **Manual selection** → confirmation screen. This satisfies the core outcome ("select a book to read next").
+- **Roulette / spinner selection** — built as an optional "Spin for me" control on the results screen (not the separate spinner screen of §14): the highlight travels across the result cards with a 2–4s decelerating sequence, lands on a random pick, and offers accept/respin. Falls back to an instant reveal under `prefers-reduced-motion`.
 - **Anonymous tracking** — every visitor gets a persisted anonymous Supabase session. The recommendation (answers + the books shown) and the final selection are written to the `recommendations` table under RLS.
 
 **Not yet built / deferred:**
 
-- **Roulette / spinner selection** (§6, §8 step 6, §11). Manual selection covers the outcome; the spinner is additive and deferred.
 - **Mark as in progress / completed** (§6, §8 steps 8–9, §12). Depends on Goodreads write-back, the spec's key risk (§7).
 - **Discrete analytics events** (§19). Sessions and selections are persisted to the `recommendations` table, but the named events are not emitted yet.
 - **Account-based identity** (email/display name). Auth is anonymous-only; there is no email sign-in.
