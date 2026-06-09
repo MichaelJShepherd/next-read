@@ -4,6 +4,7 @@ on:
   push:
     branches: [main, development]
     paths: ['frontend/**', '.github/workflows/deploy-frontend.yml']
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -32,7 +33,7 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           # 'main' deploys go to production; any other branch becomes a preview.
           command: >-
             pages deploy dist/frontend/browser
