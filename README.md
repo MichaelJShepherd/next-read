@@ -15,10 +15,10 @@
 
 The core loop is **import → quiz → results → select**:
 
-1. **Import** — the user pastes a Goodreads profile URL. The `import-goodreads` edge function reads their public "Want to Read" shelf via the Goodreads **RSS feed** (the authenticated HTML shelf is not used) and returns the books, with a 24h scrape cache. The imported list is stored in the browser's **`localStorage`**, not the database.
+1. **Import** — the user pastes a Goodreads profile URL. The `import-goodreads` edge function reads their public "Want to Read" shelf via the Goodreads **RSS feed** (the authenticated HTML shelf is not used), enriches each book with genres from **Open Library** (the RSS feed has none, and scoring needs them), and returns the books, with a 24h scrape cache. The imported list is stored in the browser's **`localStorage`**, not the database.
 2. **Quiz** — a short 3-step mood/commitment/avoidance quiz.
 3. **Scoring** — a rules-based engine runs **client-side** (`quiz.service.ts`) and ranks the TBR; the top 3–5 are shown as cards.
-4. **Details** — tapping a card fetches its synopsis and genres on demand from **Open Library** (cached in memory + `localStorage`).
+4. **Details** — tapping a card fetches its synopsis on demand from **Open Library** (cached in memory + `localStorage`); genres come from the import step.
 5. **Select** — the user confirms a book.
 
 **Anonymous tracking:** every visitor gets a persisted **anonymous Supabase session**. Each recommendation (quiz answers + the books shown) and the final selection are written to the `recommendations` table under RLS. This requires **anonymous sign-ins to be enabled** on the Supabase project (`enable_anonymous_sign_ins` — set locally in `config.toml`; enable it per environment on the hosted projects).

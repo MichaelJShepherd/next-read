@@ -16,10 +16,10 @@ The app is not intended to replace Goodreads. It is designed to make Goodreads m
 
 **Shipped end-to-end (import → quiz → results → select):**
 
-- **Goodreads import** via the public RSS feed (`/review/list_rss/{id}?shelf=to-read`), parsed by the `import-goodreads` edge function with a 24h scrape cache. Imported books are stored in the browser's `localStorage`, not the database.
+- **Goodreads import** via the public RSS feed (`/review/list_rss/{id}?shelf=to-read`), parsed by the `import-goodreads` edge function with a 24h scrape cache, then genre-enriched from **Open Library** (the RSS feed carries no genre data). Imported books are stored in the browser's `localStorage`, not the database.
 - **Mood quiz** — a **3-step** flow (mood, commitment, avoidance), not the 5-question flow in §9. See §9 for the as-built questions.
 - **Rules-based scoring** running **client-side** (`quiz.service.ts`): genre/mood match, commitment-length fit, avoidance filter, and a high-rating bonus. Results are deterministic per score with a small ±1.5 jitter so near-ties vary between runs.
-- **3–5 results** as a card list; tapping a card opens a detail modal with cover, title, author, rating, page count, genres, synopsis, and a "Why this pick" explanation derived from the scoring reasons (mood match, length fit, high rating). Synopsis + genres are fetched on demand from **Open Library** and cached.
+- **3–5 results** as a card list; tapping a card opens a detail modal with cover, title, author, rating, page count, genres, synopsis, and a "Why this pick" explanation derived from the scoring reasons (mood match, length fit, high rating). Synopsis is fetched on demand from **Open Library** and cached; genres are stored at import.
 - **Quiz guard rails** — the quiz shows an import prompt when the bookshelf is empty, keeps the user on the quiz with a friendly notice when no books match their filters, and restores previous answers when retrying ("Try different answers").
 - **Manual selection** → confirmation screen. This satisfies the core outcome ("select a book to read next").
 - **Roulette / spinner selection** — built as an optional "Spin for me" control on the results screen (not the separate spinner screen of §14): the highlight travels across the result cards with a 2–4s decelerating sequence, lands on a random pick, and offers accept/respin. Falls back to an instant reveal under `prefers-reduced-motion`.
@@ -376,7 +376,9 @@ The app first narrows the TBR using the quiz flow, then spins between the 3–5 
 > **As built:** a `books` table exists (RLS-enabled, owner-scoped) but is currently
 > unused by the app. Imported books live in `localStorage` with: `id` (client-generated),
 > `title`, `author`, `cover_url`, `page_count`, `avg_rating`, `genres`, `synopsis`, `isbn`.
-> Synopsis and genres are fetched lazily from Open Library, not at import time.
+> Genres are enriched from Open Library at import time (the Goodreads RSS feed
+> carries none, and the scoring engine needs them); synopsis is still fetched
+> lazily from Open Library when a result is opened.
 
 ### RecommendationSession
 
