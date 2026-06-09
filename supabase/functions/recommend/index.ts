@@ -1,5 +1,8 @@
 import { handleCors } from '../_shared/cors.ts';
 import { ok, err } from '../_shared/response.ts';
+import { log } from '../_shared/logger.ts';
+
+const FN = 'recommend';
 
 export async function handler(req: Request): Promise<Response> {
   const corsResponse = handleCors(req);
@@ -11,10 +14,10 @@ export async function handler(req: Request): Promise<Response> {
 
   try {
     const body = await req.json();
-    // TODO: implement mood-based recommendation logic
-    console.log('recommend called with', JSON.stringify(body));
+    log('info', FN, 'request_received', { mood: body?.mood });
     return ok({ message: 'recommend stub' });
   } catch {
+    log('error', FN, 'bad_request');
     return err('Bad request', 400);
   }
 }

@@ -2,11 +2,6 @@
 -- All user-owned tables have RLS enabled and owner-filtered policies.
 
 -- ============================================================
--- Extensions
--- ============================================================
-create extension if not exists "uuid-ossp";
-
--- ============================================================
 -- Profiles
 -- Mirrors auth.users 1-to-1. Created automatically on signup.
 -- ============================================================
@@ -31,7 +26,7 @@ create policy "Users can update own profile"
 -- Books (TBR entries imported from Goodreads)
 -- ============================================================
 create table public.books (
-  id          uuid primary key default uuid_generate_v4(),
+  id          uuid primary key default gen_random_uuid(),
   user_id     uuid not null references public.profiles (id) on delete cascade,
   title       text not null,
   author      text,
@@ -69,7 +64,7 @@ create index books_user_id_idx on public.books (user_id);
 -- Recommendations (quiz results)
 -- ============================================================
 create table public.recommendations (
-  id            uuid primary key default uuid_generate_v4(),
+  id            uuid primary key default gen_random_uuid(),
   user_id       uuid not null references public.profiles (id) on delete cascade,
   book_id       uuid references public.books (id) on delete set null,
   quiz_answers  jsonb not null default '{}',
