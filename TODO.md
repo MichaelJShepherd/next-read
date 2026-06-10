@@ -10,62 +10,8 @@
 
 > Known future work, not yet planned.
 
-### 16. Book status: mark in progress / completed
-
-Depends on: 11
-
-> Not built. The spec lists these as MVP must-haves, but they depend on Goodreads
-> write-back capability, which is the spec's called-out key risk. Selection ("accepted")
-> is already tracked; in-progress/completed states are not.
-
-#### Tasks
-
-- Decide on storage for reading status (local vs DB vs Goodreads write-back)
-- Mark a selected book as "in progress"
-- Mark a book as "completed"
-- Surface status on the home/bookshelf screen
-
-#### Done when
-
-- A user can mark a chosen book in progress and later completed
-- Status persists across sessions
-
-### 17. Server-side recommend function (decision needed)
-
-Depends on: 11
-
-> The scoring engine currently runs client-side (`quiz.service.ts`). The `recommend`
-> edge function is a stub returning `{ message: 'recommend stub' }` and is not called
-> by the frontend. Either implement scoring server-side or remove the stub.
-
-#### Tasks
-
-- Decide: keep client-side scoring, or move it behind the `recommend` edge function
-- If removing: delete the stub function and its test
-- If implementing: port scoring, validate inputs, return ranked results with logging
-
-#### Done when
-
-- No dead/stub edge function remains, or `recommend` does real work end-to-end
-
-### 13. MVP validation + analytics
-
-Depends on: 11, 16
-
-> Recommendation sessions and selections are now persisted to the `recommendations`
-> table (see task 15), which covers the North Star data. The named analytics events
-> in the spec (§19) are not yet emitted as discrete events.
-
-#### Tasks
-
-- Emit spec analytics events (session started/completed, results viewed, book selected, etc.)
-- Smoke test full end-to-end flow (import → quiz → results → select) in production
-- Validate recommendation completion with a real TBR
-
-#### Done when
-
-- An internal tester can complete the full flow in production
-- Session + selection data is queryable for the North Star metric
+_(empty — task 16 "Book status: mark in progress / completed" was dropped: it depended
+on Goodreads write-back, and there is no API for that anymore)_
 
 ---
 
@@ -73,7 +19,25 @@ Depends on: 11, 16
 
 > Scoped and ready to pick up.
 
-_(nothing queued)_
+### 13. MVP validation + analytics
+
+Depends on: 11
+
+> Recommendation sessions and selections are now persisted to the `recommendations`
+> table (see task 15), which covers the North Star data. Production smoke test of the
+> full flow is done. The named analytics events in the spec (§19) are not yet emitted
+> as discrete events — that is the only remaining work.
+
+#### Tasks
+
+- [ ] Emit spec analytics events (session started/completed, results viewed, book selected, etc.)
+- [x] Smoke test full end-to-end flow (import → quiz → results → select) in production
+- [x] Validate recommendation completion with a real TBR
+
+#### Done when
+
+- [x] An internal tester can complete the full flow in production
+- [x] Session + selection data is queryable for the North Star metric
 
 ---
 
@@ -89,38 +53,60 @@ _(nothing in flight)_
 
 > PR open / awaiting review.
 
-### 2. Part C — infrastructure finish-up
-
-Depends on: 1
-
-> Manual steps the agent cannot perform (accounts, secrets, branch protection, first deploy).
-
-#### Tasks
-
-- [ ] Create GitHub Environments (`production` and `staging`)
-- [ ] Set `SUPABASE_PROJECT_ID` variable on each environment
-- [ ] Set `CLOUDFLARE_PAGES_PROJECT` variable on each environment
-- [ ] Set `SUPABASE_ACCESS_TOKEN` secret on each environment
-- [ ] Set `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets on each environment
-- [ ] Fill in Supabase URLs + anon keys in `frontend/src/environments/` (do not commit)
-- [ ] Create Cloudflare Pages project, set production branch to `main`
-- [ ] Enable branch protection on `main` and `development` (require PRs + CI checks)
-- [ ] Merge bootstrap PR into `development`, verify staging deploy
-- [ ] Promote `development → main` for production deploy
-- [ ] Set Supabase auth Site URL / redirect URLs per environment
-- [ ] Enable anonymous sign-ins on the hosted Supabase project (Authentication → Sign In / Providers) per environment — required for recommendation/selection tracking
-
-#### Done when
-
-- Staging deploys cleanly from `development`
-- Production deploys cleanly from `main`
-- Branch protection prevents direct pushes to both branches
+_(nothing in review)_
 
 ---
 
 ## Done
 
 > Merged and verified.
+
+### 2. Part C — infrastructure finish-up
+
+Depends on: 1
+
+> Manual steps the agent cannot perform (accounts, secrets, branch protection, first deploy).
+> Production pipelines and environments are fully set up and deployed. **Staging is
+> postponed to save money** — the staging-specific steps below are deferred, not done,
+> and can be revived if/when a staging environment is wanted again.
+
+#### Tasks
+
+- [x] Create GitHub `production` Environment (`staging` postponed)
+- [x] Set `SUPABASE_PROJECT_ID` variable on the production environment
+- [x] Set `CLOUDFLARE_PAGES_PROJECT` variable on the production environment
+- [x] Set `SUPABASE_ACCESS_TOKEN` secret on the production environment
+- [x] Set `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets on the production environment
+- [x] Fill in Supabase URLs + anon keys in `frontend/src/environments/` (not committed)
+- [x] Create Cloudflare Pages project, set production branch to `main`
+- [x] Enable branch protection on `main` and `development` (require PRs + CI checks)
+- [x] Promote `development → main` for production deploy
+- [x] Set Supabase auth Site URL / redirect URLs for production
+- [x] Enable anonymous sign-ins on the hosted Supabase project (Authentication → Sign In / Providers) for production — required for recommendation/selection tracking
+- [ ] _Postponed:_ staging environment (GitHub Environment, variables/secrets, Supabase auth config, verify staging deploy from `development`)
+
+#### Done when
+
+- [x] Production deploys cleanly from `main`
+- [x] Branch protection prevents direct pushes to both branches
+- [ ] _Postponed:_ staging deploys cleanly from `development`
+
+### 17. Server-side recommend function (resolved: stays client-side)
+
+Depends on: 11
+
+> Decision made: scoring stays client-side in `quiz.service.ts`. The `recommend`
+> edge function was an uncalled stub returning `{ message: 'recommend stub' }`;
+> the stub and its test have been deleted and the README note removed.
+
+#### Tasks
+
+- [x] Decide: keep client-side scoring, or move it behind the `recommend` edge function — **kept client-side**
+- [x] Delete the stub function and its test
+
+#### Done when
+
+- [x] No dead/stub edge function remains
 
 ### 20. Broader quiz options + genre enrichment at import
 
