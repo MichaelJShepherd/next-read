@@ -80,10 +80,8 @@ export function parseRssXml(xml: string): ScrapedBook[] {
     const author = text(item, 'author_name') || null;
 
     const rawCover =
-      text(item, 'book_large_image_url') ||
-      text(item, 'book_small_image_url') ||
-      null;
-    const cover_url = rawCover?.includes('nophoto') ? null : rawCover ?? null;
+      text(item, 'book_large_image_url') || text(item, 'book_small_image_url');
+    const cover_url = rawCover && !rawCover.includes('nophoto') ? rawCover : null;
 
     const avgStr = text(item, 'average_rating');
     const avg_rating = avgStr ? parseFloat(avgStr) || null : null;
