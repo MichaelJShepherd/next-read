@@ -24,12 +24,12 @@ export class ImportComponent {
 
   protected onPaste(event: ClipboardEvent): void {
     const text = event.clipboardData?.getData('text') ?? '';
-    const extracted = extractGoodreadsUrl(text);
-    if (extracted !== text.trim()) {
-      // Pasted share text around the link — keep only the URL.
-      event.preventDefault();
-      this.url = extracted;
-    }
+    if (!text) return;
+    // Always take over the paste: the browser's default paste into a
+    // single-line input drops everything after the first newline, losing
+    // links pasted below share text.
+    event.preventDefault();
+    this.url = extractGoodreadsUrl(text);
   }
 
   protected async submit(): Promise<void> {
