@@ -56,6 +56,7 @@ const MOOD_GENRES: Record<Mood, string[]> = {
     'magical realism',
     'mythology',
     'post-apocalyptic',
+    'time travel',
   ],
   dark: [
     'horror',
