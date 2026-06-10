@@ -3,6 +3,7 @@ import { handleCors } from '../_shared/cors.ts';
 import { ok, err } from '../_shared/response.ts';
 import { log } from '../_shared/logger.ts';
 import { extractGoodreadsId, normaliseProfileUrl, scrapeWantToRead } from './scraper.ts';
+import { enrichWithGenres, hasAnyGenres } from './enrich.ts';
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
@@ -51,11 +52,14 @@ export async function handler(req: Request): Promise<Response> {
 
   if (cached) {
     const age = Date.now() - new Date(cached.scraped_at).getTime();
-    if (age < CACHE_TTL_MS) {
+    // Entries cached before genre enrichment carry no genres; serving them
+    // would leave the quiz's mood matching with nothing to score.
+    const unenriched = !hasAnyGenres(cached.book_data);
+    if (age < CACHE_TTL_MS && !unenriched) {
       log('info', FN, 'cache_hit', { goodreads_id: goodreadsId, age_ms: age });
       return ok({ books: cached.book_data, cached: true });
     }
-    log('info', FN, 'cache_stale', { goodreads_id: goodreadsId, age_ms: age });
+    log('info', FN, 'cache_stale', { goodreads_id: goodreadsId, age_ms: age, unenriched });
   } else {
     log('info', FN, 'cache_miss', { goodreads_id: goodreadsId });
   }
@@ -79,6 +83,20 @@ export async function handler(req: Request): Promise<Response> {
   }
 
   log('info', FN, 'scrape_complete', { goodreads_id: goodreadsId, book_count: books.length });
+
+  // Goodreads RSS carries no genre data; without this step every book lands
+  // with null genres and the quiz's mood matching has nothing to score.
+  log('info', FN, 'enrich_start', { goodreads_id: goodreadsId, book_count: books.length });
+  const enrichStarted = Date.now();
+  const { books: enriched, enrichedCount, skippedCount } = await enrichWithGenres(books);
+  books = enriched;
+  log('info', FN, 'enrich_complete', {
+    goodreads_id: goodreadsId,
+    book_count: books.length,
+    enriched_count: enrichedCount,
+    skipped_count: skippedCount,
+    duration_ms: Date.now() - enrichStarted,
+  });
 
   await db.from('scrape_cache').upsert(
     { profile_url: cacheKey, goodreads_id: goodreadsId, book_data: books, scraped_at: new Date().toISOString() },

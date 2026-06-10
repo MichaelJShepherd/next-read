@@ -122,6 +122,32 @@ Depends on: 1
 
 > Merged and verified.
 
+### 20. Broader quiz options + genre enrichment at import
+
+Depends on: 11
+
+> The quiz's six moods and six avoid chips were too narrow (no spicy, historical,
+> dark, or non-fiction leanings), and — more fundamentally — mood matching never
+> fired in production: the Goodreads RSS feed carries no genre data, so every
+> imported book had `genres: null` and scoring fell back to page count + rating.
+> Diverges from the spec's "genres fetched lazily, not at import" decision:
+> genres are now enriched from Open Library during import (concurrency-capped,
+> time-budgeted, cached with the scrape result); synopsis remains lazy.
+
+#### Tasks
+
+- [x] Six new moods (romantic, spicy, nostalgic, escapist, dark, curious) mapped to genres in the scoring engine
+- [x] Five new avoid chips (thriller, young adult, historical, memoir, spice)
+- [x] `enrich.ts`: Open Library genre lookup (ISBN first, title/author fallback) with per-request timeout, global time budget, and graceful per-book failure
+- [x] Treat pre-enrichment `scrape_cache` entries (no genres anywhere) as stale
+- [x] Lifecycle logging: `enrich_start` / `enrich_complete` with counts and duration
+- [x] Unit tests: new mood scoring (`quiz.service.spec.ts`), enrichment + cache staleness (`enrich_test.ts`)
+
+#### Done when
+
+- [x] Imported books carry genres so mood matching and avoid filters actually affect results
+- [x] A re-import after deploy refreshes genre-less cached shelves
+
 ### 12. Roulette / spinner selection
 
 Depends on: 11
