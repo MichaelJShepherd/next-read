@@ -102,6 +102,8 @@ describe('QuizService', () => {
       makeBook({ id: 'far-north', genres: ['Post-Apocalyptic Fiction', 'Science Fiction'] }),
       makeBook({ id: 'hidden-things', genres: ['Magical Realism', 'Fantasy'] }),
       makeBook({ id: 'everlasting', genres: ['Time Travel', 'Romance'] }),
+      makeBook({ id: 'practical-magic', genres: ['Witches', 'Magic', 'Sisters'] }),
+      makeBook({ id: 'bright-haven', genres: ['Dark Academia', 'Fantasy'] }),
       makeBook({ id: 'becoming', genres: ['Biography', 'Memoir'] }),
     ];
     const picks = await service.computePicks(
@@ -112,6 +114,8 @@ describe('QuizService', () => {
     expect(pickFor(picks, 'far-north').reasons).toContain('Matches your dark mood');
     expect(pickFor(picks, 'hidden-things').reasons).toContain('Matches your escapist mood');
     expect(pickFor(picks, 'everlasting').reasons).toContain('Matches your escapist mood');
+    expect(pickFor(picks, 'practical-magic').reasons).toContain('Matches your escapist mood');
+    expect(pickFor(picks, 'bright-haven').reasons).toContain('Matches your dark mood');
     expect(pickFor(picks, 'becoming').reasons).toContain('Matches your inspiring mood');
   });
 

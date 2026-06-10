@@ -31,7 +31,14 @@ export interface ScoredBook {
 
 const MOOD_GENRES: Record<Mood, string[]> = {
   adventurous: ['adventure', 'fantasy', 'historical fiction', 'action', 'travel'],
-  cozy: ['cozy', 'romance', 'contemporary fiction', 'slice of life', 'literary fiction'],
+  cozy: [
+    'cozy',
+    'romance',
+    'contemporary fiction',
+    'slice of life',
+    'literary fiction',
+    'found family',
+  ],
   emotional: ['literary fiction', 'contemporary fiction', 'romance', 'memoir', 'drama'],
   thrilling: ['thriller', 'mystery', 'horror', 'suspense', 'crime'],
   funny: ['humor', 'comedy', 'satire', 'contemporary fiction', 'comic'],
@@ -57,6 +64,7 @@ const MOOD_GENRES: Record<Mood, string[]> = {
     'mythology',
     'post-apocalyptic',
     'time travel',
+    'witches',
   ],
   dark: [
     'horror',
@@ -66,6 +74,7 @@ const MOOD_GENRES: Record<Mood, string[]> = {
     'true crime',
     'dystopia',
     'post-apocalyptic',
+    'dark academia',
   ],
   curious: ['non-fiction', 'nonfiction', 'science', 'history', 'psychology', 'philosophy'],
 };
