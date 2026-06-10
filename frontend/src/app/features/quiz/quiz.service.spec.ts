@@ -95,6 +95,24 @@ describe('QuizService', () => {
     expect(pickFor(picks, 'pop-sci').reasons).toContain('Matches your curious mood');
   });
 
+  it('matches Open Library style subjects from a real TBR', async () => {
+    // Subjects as Open Library returns them: capitalised and often oddly phrased.
+    books = [
+      makeBook({ id: 'achilles', genres: ['Greek Mythology', 'Historical Fiction'] }),
+      makeBook({ id: 'far-north', genres: ['Post-Apocalyptic Fiction', 'Science Fiction'] }),
+      makeBook({ id: 'hidden-things', genres: ['Magical Realism', 'Fantasy'] }),
+      makeBook({ id: 'becoming', genres: ['Biography', 'Memoir'] }),
+    ];
+    const picks = await service.computePicks(
+      answers({ moods: ['nostalgic', 'escapist', 'dark', 'inspiring'] }),
+    );
+    expect(pickFor(picks, 'achilles').reasons).toContain('Matches your nostalgic mood');
+    expect(pickFor(picks, 'far-north').reasons).toContain('Matches your escapist mood');
+    expect(pickFor(picks, 'far-north').reasons).toContain('Matches your dark mood');
+    expect(pickFor(picks, 'hidden-things').reasons).toContain('Matches your escapist mood');
+    expect(pickFor(picks, 'becoming').reasons).toContain('Matches your inspiring mood');
+  });
+
   it('rewards a commitment fit and penalises a mismatch', async () => {
     books = [
       makeBook({ id: 'fits', page_count: 250 }),
