@@ -32,7 +32,7 @@ export class BooksService {
   }
 
   saveMany(books: NewBook[]): Promise<void> {
-    const rows: Book[] = books.map(b => ({ ...b, id: generateId() }));
+    const rows: Book[] = books.map((b) => ({ ...b, id: generateId() }));
     localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
     return Promise.resolve();
   }
