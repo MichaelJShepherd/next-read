@@ -1,13 +1,13 @@
 <div class="min-h-screen bg-[var(--color-neutral-0)] flex flex-col px-6 py-8">
   <div class="w-full max-w-[480px] mx-auto flex flex-col gap-6 flex-1">
     <!-- ── Accepted confirmation ── -->
-    @if (acceptedBook()) {
+    @if (acceptedBook(); as accepted) {
       <div class="flex flex-col items-center text-center gap-6 flex-1 justify-center book-reveal">
         <div class="flex flex-col items-center gap-4">
-          @if (acceptedBook()!.cover_url) {
+          @if (accepted.cover_url) {
             <img
-              [src]="acceptedBook()!.cover_url"
-              [alt]="acceptedBook()!.title + ' cover'"
+              [src]="accepted.cover_url"
+              [alt]="accepted.title + ' cover'"
               class="h-64 w-44 object-cover rounded-[var(--radius-md)] shadow-[var(--shadow-lg)]"
             />
           } @else {
@@ -24,11 +24,11 @@
               Enjoy the read
             </p>
             <h2 class="font-display text-2xl text-[var(--color-neutral-800)] leading-tight">
-              {{ acceptedBook()!.title }}
+              {{ accepted.title }}
             </h2>
-            @if (acceptedBook()!.author) {
+            @if (accepted.author) {
               <p class="mt-1 text-sm text-[var(--color-neutral-500)]">
-                {{ acceptedBook()!.author }}
+                {{ accepted.author }}
               </p>
             }
           </div>
@@ -86,7 +86,7 @@
               </button>
             }
             <div aria-live="polite">
-              @if (spunBook() && !spinning()) {
+              @if (!spinning() && spunBook(); as spun) {
                 <div
                   class="book-reveal flex flex-col gap-3 rounded-[var(--radius-lg)] border border-[var(--color-green-200)] bg-[var(--color-green-50)] p-4"
                 >
@@ -99,11 +99,11 @@
                     <p
                       class="mt-1 font-display text-lg text-[var(--color-neutral-800)] leading-snug"
                     >
-                      {{ spunBook()!.title }}
+                      {{ spun.title }}
                     </p>
-                    @if (spunBook()!.author) {
+                    @if (spun.author) {
                       <p class="mt-0.5 text-xs text-[var(--color-neutral-500)]">
-                        {{ spunBook()!.author }}
+                        {{ spun.author }}
                       </p>
                     }
                   </div>
@@ -230,7 +230,7 @@
 </div>
 
 <!-- ── Book detail modal (bottom sheet) ── -->
-@if (selectedBook()) {
+@if (selectedBook(); as book) {
   <div
     role="dialog"
     aria-modal="true"
@@ -258,10 +258,10 @@
       <div class="overflow-y-auto flex flex-col gap-5 px-6 pt-2 pb-8">
         <!-- Cover + title -->
         <div class="flex gap-4 items-start">
-          @if (selectedBook()!.cover_url) {
+          @if (book.cover_url) {
             <img
-              [src]="selectedBook()!.cover_url"
-              [alt]="selectedBook()!.title + ' cover'"
+              [src]="book.cover_url"
+              [alt]="book.title + ' cover'"
               class="h-36 w-24 object-cover rounded-[var(--radius-md)] shadow-[var(--shadow-md)] flex-shrink-0"
             />
           } @else {
@@ -276,11 +276,11 @@
               id="modal-title"
               class="font-display text-xl text-[var(--color-neutral-800)] leading-tight"
             >
-              {{ selectedBook()!.title }}
+              {{ book.title }}
             </h2>
-            @if (selectedBook()!.author) {
+            @if (book.author) {
               <p class="mt-1 text-sm text-[var(--color-neutral-500)]">
-                {{ selectedBook()!.author }}
+                {{ book.author }}
               </p>
             }
           </div>
@@ -288,22 +288,22 @@
 
         <!-- Metadata chips -->
         <div class="flex flex-wrap gap-2">
-          @if (selectedBook()!.avg_rating) {
+          @if (book.avg_rating; as rating) {
             <span
               class="inline-flex items-center gap-1.5 h-8 px-3 rounded-full bg-[var(--color-amber-400)]/10 text-xs font-medium text-[var(--color-neutral-700)]"
             >
               <span class="text-[var(--color-amber-500)]">★</span>
-              {{ selectedBook()!.avg_rating!.toFixed(2) }} rating
+              {{ rating.toFixed(2) }} rating
             </span>
           }
-          @if (selectedBook()!.page_count) {
+          @if (book.page_count) {
             <span
               class="inline-flex items-center h-8 px-3 rounded-full bg-[var(--color-neutral-100)] text-xs font-medium text-[var(--color-neutral-600)]"
             >
-              {{ selectedBook()!.page_count }} pages
+              {{ book.page_count }} pages
             </span>
           }
-          @for (genre of details().genres ?? selectedBook()!.genres ?? []; track genre) {
+          @for (genre of details().genres ?? book.genres ?? []; track genre) {
             <span
               class="inline-flex items-center h-8 px-3 rounded-full bg-[var(--color-green-50)] border border-[var(--color-green-200)] text-xs font-medium text-[var(--color-green-700)]"
             >
@@ -313,7 +313,7 @@
         </div>
 
         <!-- Why this pick -->
-        @if (reasonsFor(selectedBook()!).length) {
+        @if (reasonsFor(book).length) {
           <div>
             <h3
               class="text-xs font-medium tracking-[0.1em] uppercase text-[var(--color-green-700)] mb-2"
@@ -321,7 +321,7 @@
               Why this pick
             </h3>
             <ul class="flex flex-col gap-1.5">
-              @for (reason of reasonsFor(selectedBook()!); track reason) {
+              @for (reason of reasonsFor(book); track reason) {
                 <li class="flex items-start gap-2 text-sm text-[var(--color-neutral-600)]">
                   <span class="text-[var(--color-green-500)] mt-0.5" aria-hidden="true">✓</span>
                   {{ reason }}

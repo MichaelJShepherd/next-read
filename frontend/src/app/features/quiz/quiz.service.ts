@@ -147,10 +147,11 @@ export class QuizService {
     this.recommendationId.set(null);
     const books = await this.booksService.getAll();
     const scored: ScoredBook[] = books
-      .map((b) => ({ book: b, ...scoreBook(b, answers), _sort: 0 }))
-      .map((s) => ({ ...s, _sort: s.score + (Math.random() - 0.5) * 3 }))
+      .map((b) => ({ book: b, ...scoreBook(b, answers) }))
       .filter((s) => s.score > -900)
-      .sort((a, b) => b._sort - a._sort)
+      // Jitter near-ties so closely-scored books vary between runs.
+      .map((s) => ({ ...s, sort: s.score + (Math.random() - 0.5) * 3 }))
+      .sort((a, b) => b.sort - a.sort)
       .map(({ book, score, reasons }) => ({ book, score, reasons }));
     this.picks.set(scored);
     return scored;

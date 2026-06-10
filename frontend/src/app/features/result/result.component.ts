@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { QuizService } from '../quiz/quiz.service';
 import { RecommendationsService } from '../quiz/recommendations.service';
 import { Book } from '../../core/books.service';
-import { SynopsisService, BookDetails } from '../../core/synopsis.service';
+import { SynopsisService, BookDetails, EMPTY_DETAILS } from '../../core/synopsis.service';
 import { buildSpinPlan, SpinStep } from './spin-plan';
 
 const MAX_PICKS = 5;
@@ -27,7 +27,7 @@ export class ResultComponent implements OnInit, OnDestroy {
   private reasonsByBookId = new Map<string, string[]>();
 
   protected readonly detailsLoading = signal(false);
-  protected readonly details = signal<BookDetails>({ synopsis: null, genres: null });
+  protected readonly details = signal<BookDetails>(EMPTY_DETAILS);
 
   protected readonly spinning = signal(false);
   protected readonly highlightIndex = signal<number | null>(null);
@@ -61,7 +61,7 @@ export class ResultComponent implements OnInit, OnDestroy {
 
   protected openModal(book: Book): void {
     this.selectedBook.set(book);
-    this.details.set({ synopsis: null, genres: null });
+    this.details.set(EMPTY_DETAILS);
     this.doc.body.style.overflow = 'hidden';
     this.loadDetails(book);
   }

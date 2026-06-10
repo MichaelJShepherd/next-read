@@ -30,7 +30,7 @@ export class RecommendationsService {
     const userId = await this.auth.ensureSession();
     if (!userId) return null;
 
-    const snapshot: PickSnapshot[] = picks.map(p => ({
+    const snapshot: PickSnapshot[] = picks.map((p) => ({
       title: p.book.title,
       author: p.book.author,
       isbn: p.book.isbn,

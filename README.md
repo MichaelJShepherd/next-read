@@ -23,8 +23,6 @@ The core loop is **import → quiz → results → select**:
 
 **Anonymous tracking:** every visitor gets a persisted **anonymous Supabase session**. Each recommendation (quiz answers + the books shown) and the final selection are written to the `recommendations` table under RLS. This requires **anonymous sign-ins to be enabled** on the Supabase project (`enable_anonymous_sign_ins` — set locally in `config.toml`; enable it per environment on the hosted projects).
 
-> Note: the `recommend` edge function is currently a stub — scoring lives in the frontend. See `TODO.md` task 17.
-
 ## Local development
 
 ### Prerequisites

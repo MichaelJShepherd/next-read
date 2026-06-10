@@ -51,16 +51,7 @@ export class ImportComponent {
     this.status.set('saving');
     try {
       await this.booksService.clearAll();
-      const newBooks: NewBook[] = this.books().map((b) => ({
-        title: b.title,
-        author: b.author,
-        cover_url: b.cover_url,
-        page_count: b.page_count,
-        avg_rating: b.avg_rating,
-        genres: b.genres,
-        synopsis: null,
-        isbn: b.isbn,
-      }));
+      const newBooks: NewBook[] = this.books().map((b) => ({ ...b, synopsis: null }));
       await this.booksService.saveMany(newBooks);
       this.router.navigate(['/quiz']);
     } catch (e) {

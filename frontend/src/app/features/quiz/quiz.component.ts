@@ -7,6 +7,7 @@ import {
   signal,
   computed,
   ViewChildren,
+  WritableSignal,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { QuizService, Mood, Commitment, QuizAnswers } from './quiz.service';
@@ -87,10 +88,9 @@ export class QuizComponent implements OnInit {
 
   protected readonly moodValid = computed(() => this.selectedMoods().size > 0);
   protected readonly commitmentValid = computed(() => this.selectedCommitment() !== null);
-  protected readonly stepNumber = computed(() => STEPS.findIndex((s) => s.id === this.step()) + 1);
-  protected readonly stepTitle = computed(
-    () => STEPS.find((s) => s.id === this.step())?.title ?? '',
-  );
+  private readonly stepIndex = computed(() => STEPS.findIndex((s) => s.id === this.step()));
+  protected readonly stepNumber = computed(() => this.stepIndex() + 1);
+  protected readonly stepTitle = computed(() => STEPS[this.stepIndex()]?.title ?? '');
 
   constructor() {
     // Restore previous answers so "Try different answers" lets the user
@@ -109,20 +109,21 @@ export class QuizComponent implements OnInit {
   }
 
   protected isStepDone(id: Step): boolean {
-    return STEPS.findIndex((s) => s.id === id) < STEPS.findIndex((s) => s.id === this.step());
+    return STEPS.findIndex((s) => s.id === id) < this.stepIndex();
   }
 
   protected toggleMood(id: Mood): void {
-    const next = new Set(this.selectedMoods());
-    next.has(id) ? next.delete(id) : next.add(id);
-    this.selectedMoods.set(next);
-    this.noMatches.set(false);
+    this.toggleSelection(this.selectedMoods, id);
   }
 
   protected toggleAvoid(id: string): void {
-    const next = new Set(this.selectedAvoid());
+    this.toggleSelection(this.selectedAvoid, id);
+  }
+
+  private toggleSelection<T>(selection: WritableSignal<Set<T>>, id: T): void {
+    const next = new Set(selection());
     next.has(id) ? next.delete(id) : next.add(id);
-    this.selectedAvoid.set(next);
+    selection.set(next);
     this.noMatches.set(false);
   }
 

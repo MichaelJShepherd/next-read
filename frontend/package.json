@@ -9,6 +9,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:e2e": "jest --config jest.e2e.config.js",
+    "format": "prettier --write \"src/**/*.{ts,html,css}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,html,css}\"",
     "smoke:prod": "node scripts/smoke-prod.cjs"
   },
   "engines": {

@@ -8,8 +8,11 @@ import { enrichWithGenres, hasAnyGenres } from './enrich.ts';
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 function supabaseAdmin() {
-  const url = Deno.env.get('SUPABASE_URL')!;
-  const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+  const url = Deno.env.get('SUPABASE_URL');
+  const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  if (!url || !key) {
+    throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY environment variable');
+  }
   return createClient(url, key, { auth: { persistSession: false } });
 }
 

@@ -1,26 +1,18 @@
 import { inject, Injectable } from '@angular/core';
-import { SupabaseService } from '../../core/supabase.service';
+import { ApiClientService } from '../../core/api-client.service';
+import { NewBook } from '../../core/books.service';
 
-export interface ScrapedBook {
-  title: string;
-  author: string | null;
-  cover_url: string | null;
-  page_count: number | null;
-  avg_rating: number | null;
-  genres: string[] | null;
-  isbn: string | null;
-}
+/** Book shape returned by the import-goodreads edge function — a book before it has a synopsis. */
+export type ScrapedBook = Omit<NewBook, 'synopsis'>;
 
 @Injectable({ providedIn: 'root' })
 export class ImportService {
-  private readonly client = inject(SupabaseService).client;
+  private readonly api = inject(ApiClientService);
 
   async importFromUrl(profileUrl: string): Promise<ScrapedBook[]> {
-    const { data, error } = await this.client.functions.invoke<{ books: ScrapedBook[] }>(
-      'import-goodreads',
-      { body: { profileUrl } },
-    );
-    if (error) throw new Error(error.message);
+    const data = await this.api.invokeFunction<{ books: ScrapedBook[] }>('import-goodreads', {
+      profileUrl,
+    });
     return data?.books ?? [];
   }
 }
